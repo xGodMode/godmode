@@ -1,0 +1,30 @@
+{
+  "name": "godmode-in-testnet",
+  "version": "0.0.1",
+  "description": "",
+  "main": "gmit.js",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/martinetlee/godmode-in-testnet.git"
+  },
+  "keywords": [
+    "ethereum",
+    "test",
+    "solidity"
+  ],
+  "author": "Martinet Lee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/martinetlee/godmode-in-testnet/issues"
+  },
+  "homepage": "https://github.com/martinetlee/godmode-in-testnet#readme",
+  "dependencies": {
+    "promise": "^8.1.0",
+    "web3": "^1.2.7",
+    "websocket-as-promised": "^1.0.1",
+    "ws": "^7.3.0"
+  }
+}
