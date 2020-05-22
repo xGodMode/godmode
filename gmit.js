@@ -59,29 +59,26 @@ GMIT.prototype.close = async function(){
 }
 
 // This function is expected to work under truffle environment
-GMIT.prototype.executeAs = async function(deployedContract, replacementContractArtifact, functionToCall, arguments){
+GMIT.prototype.executeAs = async function(deployedContract, replacementContractArtifact, functionToCall /*, args*/){
   let targetAddr0x = deployedContract.address;
   let targetAddr = targetAddr0x.substring(2); // remove 0x
   let replacementCode = replacementContractArtifact.deployedBytecode.substring(2); // remove 0x
-  console.log(targetAddr);
-
+  
   //let balance = await GMDaiContract.methods.balanceOf(targetAddr0x).call({from: accounts[0]});
   //console.log(balance);
 
   // get current code
   let originalCode = await this.getContractCode(targetAddr);
-  console.log(originalCode);
-
+  
   // change contract code
   await this.putContractCode(targetAddr, replacementCode);
-  console.log(replacementCode);
-
+  
   // execute the functionToCall
   // ref: https://stackoverflow.com/questions/359788/how-to-execute-a-javascript-function-when-i-have-its-name-as-a-string
-  console.log("preping for execution:");
-  let replacedContract = replacementContractArtifact.at(targetAddr0x);
-  await replacedContract[functionToCall](arguments);
-  console.log("Executed!");
+  let replacedContract = await replacementContractArtifact.at(targetAddr0x);
+
+  var args = Array.prototype.slice.call(arguments, 3);
+  await replacedContract[functionToCall](...args);
   // restore contract code
   await this.putContractCode(targetAddr, originalCode);
 }
