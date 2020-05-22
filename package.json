@@ -1,6 +1,6 @@
 {
   "name": "godmode-in-testnet",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "gmit.js",
   "scripts": {
