@@ -16,7 +16,7 @@ var web3 = new Web3();
 // gm.uniswap.setFeeTo();
 
 // e.g. ("mainnet", "ws://localhost:8545")
-function GMIT(network, provider){
+function GM(network, provider){
 
   switch(network){
     case 'mainnet':
@@ -38,11 +38,11 @@ function GMIT(network, provider){
   // this.uniswapV2.factory.address = this.uniswapV2Addr['Factory'];
 
   if(network != 'development')
-    this.makerDao.dai.address = GMIT.MakerDaoAddrMapping[this.network]['DAI'];
+    this.makerDao.dai.address = GM.MakerDaoAddrMapping[this.network]['DAI'];
 
 }
 
-GMIT.prototype.open = async function(){
+GM.prototype.open = async function(){
   this.wsp = new WebSocketAsPromised(this.provider, {
     createWebSocket: url => new WebSocket(url),
     extractMessageData: event => event, 
@@ -54,12 +54,12 @@ GMIT.prototype.open = async function(){
   return this.wsp.open();
 }
 
-GMIT.prototype.close = async function(){
+GM.prototype.close = async function(){
   this.wsp.close();
 }
 
 // This function is expected to work under truffle environment
-GMIT.prototype.executeAs = async function(deployedContract, replacementContractArtifact, functionToCall /*, args*/){
+GM.prototype.executeAs = async function(deployedContract, replacementContractArtifact, functionToCall /*, args*/){
   let targetAddr0x = deployedContract.address;
   let targetAddr = targetAddr0x.substring(2); // remove 0x
   let replacementCode = replacementContractArtifact.deployedBytecode.substring(2); // remove 0x
@@ -84,7 +84,7 @@ GMIT.prototype.executeAs = async function(deployedContract, replacementContractA
 }
 
 // check if "Godmode ganache" is present
-GMIT.prototype.pingGodModeGanache = async function(){
+GM.prototype.pingGodModeGanache = async function(){
   var thisRequestId = this.curRequestId;
   this.curRequestId++;
 
@@ -95,7 +95,7 @@ GMIT.prototype.pingGodModeGanache = async function(){
   }, {requestId: thisRequestId});
 };
 
-GMIT.prototype.putContractCode = async function(contractAddr, value){
+GM.prototype.putContractCode = async function(contractAddr, value){
   //ws.send('{"jsonrpc":"2.0","id":1,"method":"putContractCode","params":["'+contractAddr+'", "'+value+'"]}');
   var thisRequestId = this.curRequestId;
   this.curRequestId++;
@@ -110,7 +110,7 @@ GMIT.prototype.putContractCode = async function(contractAddr, value){
   // });
 };
 
-GMIT.prototype.getContractCode = async function(contractAddr){
+GM.prototype.getContractCode = async function(contractAddr){
   var thisRequestId = this.curRequestId;
   this.curRequestId++;
 
@@ -121,9 +121,9 @@ GMIT.prototype.getContractCode = async function(contractAddr){
   }, {requestId: thisRequestId});    
 };
 
-GMIT.prototype.makerDao = {};
-GMIT.prototype.makerDao.dai = {};
-GMIT.prototype.mintDai = async function(targetAddr, amount){
+GM.prototype.makerDao = {};
+GM.prototype.makerDao.dai = {};
+GM.prototype.mintDai = async function(targetAddr, amount){
   let targetAddr0x = "0x" + targetAddr;
   let daiAddr = this.makerDao.dai.address;
 
@@ -150,7 +150,7 @@ GMIT.prototype.mintDai = async function(targetAddr, amount){
 }
 
 
-GMIT.uniswapV2AddrMapping = {
+GM.uniswapV2AddrMapping = {
   'mainnet': {
     'Factory': '5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
     'Router': 'f164fC0Ec4E93095b804a4795bBe1e041497b92a',
@@ -169,13 +169,13 @@ GMIT.uniswapV2AddrMapping = {
   }
 };
 
-GMIT.MakerDaoAddrMapping = {
+GM.MakerDaoAddrMapping = {
   'mainnet':{
     'DAI': '6B175474E89094C44Da98b954EedeAC495271d0F'
   }
 };
 
-module.exports = GMIT;
+module.exports = GM;
 
 
 // DAI contract
