@@ -256,7 +256,7 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
         reserve0 = newReserve0;
     }
 
-    function setToken1(uint112 newReserve1) external {
+    function setReserve1(uint112 newReserve1) external {
         reserve1 = newReserve1;
     }
 

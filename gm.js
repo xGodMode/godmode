@@ -4,7 +4,12 @@ const Promise = require('promise');
 var Web3 = require('web3');
 
 // import godmode contract info for common defi projects
+// DAI
 var GMDai = require('./gmContractsInfo/gmDai.js');
+
+// UNISWAP
+var GMUniswapV2Factory = require('./build/contracts/UniswapV2Factory.json');
+var GMUniswapV2Pair = require('./build/contracts/UniswapV2Pair.json');
 
 
 // Instantiate web3
@@ -34,12 +39,16 @@ function GM(network, provider){
   this.curRequestId = 1;
   this.network = network;
 
+  let accounts = await web3.eth.personal.getAccounts();
+  this.txSender = accounts[0];
+
   // this.uniswapV2Addr = GMIT.uniswapV2AddrMapping[this.network];
   // this.uniswapV2.factory.address = this.uniswapV2Addr['Factory'];
 
-  if(network != 'development')
+  if(network != 'development'){
     this.makerDao.dai.address = GM.MakerDaoAddrMapping[this.network]['DAI'];
-
+    this.uniswapV2.Factory.address = GM.uniswapV2AddrMapping[this.network]['Factory'];
+  }
 }
 
 GM.prototype.open = async function(){
@@ -121,59 +130,99 @@ GM.prototype.getContractCode = async function(contractAddr){
   }, {requestId: thisRequestId});    
 };
 
+// MAKERDAO ecosystem 
 GM.prototype.makerDao = {};
 GM.prototype.makerDao.dai = {};
-GM.prototype.mintDai = async function(targetAddr, amount){
-  let targetAddr0x = "0x" + targetAddr;
-  let daiAddr = this.makerDao.dai.address;
-
-  var GMDaiContract =  new web3.eth.Contract(GMDai.abi, "0x"+daiAddr);
-  let accounts = await web3.eth.personal.getAccounts();
-
-  //let balance = await GMDaiContract.methods.balanceOf(targetAddr0x).call({from: accounts[0]});
-  //console.log(balance);
-
-  // get current code
-  let originalCode = await this.getContractCode(daiAddr);
-
-  // change contract code
-  await this.putContractCode(daiAddr, GMDai.code);
-
-  // change dai amount (perhaps use mint?)
-  await GMDaiContract.methods.mint(targetAddr0x, amount).send({from: accounts[0]});
-  
-  // restore contract code
-  await this.putContractCode(daiAddr, originalCode);
-  
-  //balance = await GMDaiContract.methods.balanceOf(targetAddr0x).call({from: accounts[0]});
-  //console.log(balance);
-}
-
-
-GM.uniswapV2AddrMapping = {
-  'mainnet': {
-    'Factory': '5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
-    'Router': 'f164fC0Ec4E93095b804a4795bBe1e041497b92a',
-  },
-  'ropsten': {
-    'Factory': '5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
-    'Router': 'f164fC0Ec4E93095b804a4795bBe1e041497b92a',
-  },
-  'rinkeby': {
-    'Factory': '5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
-    'Router': 'f164fC0Ec4E93095b804a4795bBe1e041497b92a',
-  },
-  'kovan': {
-    'Factory': '5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
-    'Router': 'f164fC0Ec4E93095b804a4795bBe1e041497b92a',
-  }
-};
 
 GM.MakerDaoAddrMapping = {
   'mainnet':{
     'DAI': '6B175474E89094C44Da98b954EedeAC495271d0F'
   }
 };
+// DAI
+GM.prototype.mintDai = async function(targetAddr, amount){
+  var targetContractAddr = this.makerDao.dai.address;
+  var GMDaiContract =  new web3.eth.Contract(GMDai.abi, "0x"+targetContractAddr);
+
+  // get current code
+  let originalCode = await this.getContractCode(targetContractAddr);
+  // change contract code
+  await this.putContractCode(targetContractAddr, GMDai.code);
+  // change dai amount (perhaps use mint?)
+  await GMDaiContract.methods.mint(targetAddr, amount).send({from: this.txSender});
+  // restore contract code
+  await this.putContractCode(targetContractAddr, originalCode);
+}
+
+// UNISWAP V2
+GM.uniswapV2AddrMapping = {
+  'mainnet': {
+    'Factory': '5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
+    'Router': 'f164fC0Ec4E93095b804a4795bBe1e041497b92a',
+  }
+};
+
+GM.prototype.uniswapV2 = {};
+GM.prototype.uniswapV2.Factory = {}
+GM.prototype.uniswapV2.Router = {}
+GM.prototype.uniswapV2.Pair = {}
+
+GM.prototype.uniswapV2.Factory.setFeeTo = async function(_feeTo){
+  var targetContractAddr = this.uniswapV2.Factory.address;
+  var targetContract =  new web3.eth.Contract(GMUniswapV2Factory.abi, "0x"+targetContractAddr);
+
+  // get current code
+  let originalCode = await this.getContractCode(targetContractAddr);
+  // change contract code
+  await this.putContractCode(targetContractAddr, GMUniswapV2Factory.deployedBytecode.substring(2));
+  // setFeeTo
+  await targetContract.methods.setFeeTo(_feeTo).send({from: this.txSender});
+  // restore contract code
+  await this.putContractCode(targetContractAddr, originalCode);
+};
+
+GM.prototype.uniswapV2.Factory.setFeeToSetter = async function(_feeToSetter){
+  var targetContractAddr = this.uniswapV2.Factory.address;
+  var compiledContract = GMUniswapV2Factory;
+  var targetContract =  new web3.eth.Contract(compiledContract.abi, "0x"+targetContractAddr);
+
+  // get current code
+  let originalCode = await this.getContractCode(targetContractAddr);
+  // change contract code
+  await this.putContractCode(targetContractAddr, compiledContract.deployedBytecode.substring(2));
+  // setFeeTo
+  await targetContract.methods.setFeeToSetter(_feeToSetter).send({from: this.txSender});
+  // restore contract code
+  await this.putContractCode(targetContractAddr, originalCode);
+};
+
+
+GM.prototype.uniswapV2.Pair.setKLast = async function(pairAddr, newKLast){
+  var targetContractAddr = pairAddr.substring(2);
+  var compiledContract = GMUniswapV2Pair;
+  var targetContract =  new web3.eth.Contract(compiledContract.abi, "0x"+targetContractAddr);
+
+  // get current code
+  let originalCode = await this.getContractCode(targetContractAddr);
+  // change contract code
+  await this.putContractCode(targetContractAddr, compiledContract.deployedBytecode.substring(2));
+  // setFeeTo
+  await targetContract.methods.setKLast(newKLast).send({from: this.txSender});
+  // restore contract code
+  await this.putContractCode(targetContractAddr, originalCode);
+};
+
+
+// COMPOUND
+GM.compoundAddrMapping = {
+  'mainnet': {
+    'Factory': '5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
+    'Router': 'f164fC0Ec4E93095b804a4795bBe1e041497b92a',
+  }
+};
+
+GM.prototype.compound = {};
+GM.prototype.compound.Factory = {}
 
 module.exports = GM;
 
