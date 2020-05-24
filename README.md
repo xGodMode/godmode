@@ -9,6 +9,13 @@ When using this library, you would need to run the Godmode ganache as well.
 To see a sample project that uses this library, see this repo:
 * [GODMODE Sample Project](https://github.com/martinetlee/godmode-sample-project)
 
+## Repositories of the Hackathon Projects
+* [GODMODE Ganache-cli](https://github.com/martinetlee/godmode-ganache-cli)
+* [GODMODE Ganache-core](https://github.com/martinetlee/godmode-ganache-core)
+* [GODMODE NodeJSLibrary (This repo)](https://github.com/martinetlee/godmode-for-test/)
+* [GODMODE Sample Project](https://github.com/martinetlee/godmode-sample-project)
+
+
 ## Installation
 
 `npm install godmode-for-test`
