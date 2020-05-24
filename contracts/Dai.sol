@@ -7,7 +7,7 @@
 */
 
 // hevm: flattened sources of /nix/store/8xb41r4qd0cjb63wcrxf1qmfg88p0961-dss-6fd7de0/src/dai.sol
-pragma solidity =0.5.12;
+pragma solidity >=0.5.12;
 
 ////// /nix/store/8xb41r4qd0cjb63wcrxf1qmfg88p0961-dss-6fd7de0/src/lib.sol
 // This program is free software: you can redistribute it and/or modify
