@@ -2,6 +2,23 @@
 
 This library provides a truffle framework friendly api that allows developers to use the "Godmode Ganache" within the javascript testing environment provided in the truffle framework. The library also precompiles Godmode contracts for popular defi projects such as MakerDao, Uniswap, and Compound. It provides an easy way to modify the state of the projects through a set of API. 
 
+When using this library, you would need to run the Godmode ganache as well. 
+* [GODMODE Ganache-cli](https://github.com/martinetlee/godmode-ganache-cli)
+* [GODMODE Ganache-core](https://github.com/martinetlee/godmode-ganache-core)
+
+To see a sample project that uses this library, see this repo:
+* [GODMODE Sample Project](https://github.com/martinetlee/godmode-sample-project)
+
+## Repositories of the Hackathon Project
+
+This project is built by **Martinet Lee** for ETHGlobal Hack The Money 2020, it consists of the following repositories:
+
+* [GODMODE Ganache-cli](https://github.com/martinetlee/godmode-ganache-cli)
+* [GODMODE Ganache-core](https://github.com/martinetlee/godmode-ganache-core)
+* [GODMODE NodeJSLibrary (This repo)](https://github.com/martinetlee/godmode-for-test/)
+* [GODMODE Sample Project](https://github.com/martinetlee/godmode-sample-project)
+
+
 ## Installation
 
 `npm install godmode-for-test`
@@ -48,9 +65,10 @@ Variable explanation:
 ### MakerDao
 
 #### Dai
-* mintDai: `await GODMODE.mintDai(Bob, 10000);`
-* transferDai
-* burnDai
+* mint Dai to an address: `await GODMODE.mintDai(Bob, 10000);`
 
 ### Uniswap
+* Enable Fee collection in UniswapV2: `await GODMODE.uniswapV2Factory_setFeeTo(Bob);`
 
+### Compound
+* Give the address cTokens: `await GODMODE.CToken_giveAddrTokens("0x6c8c6b02e7b2be14d4fa6022dfd6d75921d90e4e", Bob, 100);   `
