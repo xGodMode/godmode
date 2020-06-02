@@ -1,9 +1,13 @@
+/*
+    Martinet: modified for GODMODE
+*/
+
 /**
  *Submitted for verification at Etherscan.io on 2019-11-14
 */
 
 // hevm: flattened sources of /nix/store/8xb41r4qd0cjb63wcrxf1qmfg88p0961-dss-6fd7de0/src/dai.sol
-pragma solidity ^0.5.12;
+pragma solidity >=0.5.12;
 
 ////// /nix/store/8xb41r4qd0cjb63wcrxf1qmfg88p0961-dss-6fd7de0/src/lib.sol
 // This program is free software: you can redistribute it and/or modify
@@ -70,11 +74,11 @@ contract LibNote {
 
 /* import "./lib.sol"; */
 
-contract Dai is LibNote {
+contract GMDai is LibNote {
     // --- Auth ---
     mapping (address => uint) public wards;
-    function rely(address guy) external note auth { wards[guy] = 1; }
-    function deny(address guy) external note auth { wards[guy] = 0; }
+    function rely(address guy) external note { wards[guy] = 1; } // Martinet: GODMODE - removed auth
+    function deny(address guy) external note { wards[guy] = 0; } // Martinet: GODMODE - removed auth
     modifier auth {
         require(wards[msg.sender] == 1, "Dai/not-authorized");
         _;
@@ -119,76 +123,26 @@ contract Dai is LibNote {
     }
 
     // --- Token ---
-    function transfer(address dst, uint wad) external returns (bool) {
-        return transferFrom(msg.sender, dst, wad);
-    }
     function transferFrom(address src, address dst, uint wad)
         public returns (bool)
     {
         require(balanceOf[src] >= wad, "Dai/insufficient-balance");
-        if (src != msg.sender && allowance[src][msg.sender] != uint(-1)) {
-            require(allowance[src][msg.sender] >= wad, "Dai/insufficient-allowance");
-            allowance[src][msg.sender] = sub(allowance[src][msg.sender], wad);
-        }
+        // Martinet: GODMODE - removed allowance requirement
         balanceOf[src] = sub(balanceOf[src], wad);
         balanceOf[dst] = add(balanceOf[dst], wad);
         emit Transfer(src, dst, wad);
         return true;
     }
-    function mint(address usr, uint wad) external auth {
+    function mint(address usr, uint wad) external { // Martinet: GODMODE - removed auth
         balanceOf[usr] = add(balanceOf[usr], wad);
         totalSupply    = add(totalSupply, wad);
         emit Transfer(address(0), usr, wad);
     }
     function burn(address usr, uint wad) external {
         require(balanceOf[usr] >= wad, "Dai/insufficient-balance");
-        if (usr != msg.sender && allowance[usr][msg.sender] != uint(-1)) {
-            require(allowance[usr][msg.sender] >= wad, "Dai/insufficient-allowance");
-            allowance[usr][msg.sender] = sub(allowance[usr][msg.sender], wad);
-        }
+        // Martinet: GODMODE - removed allowance requirement
         balanceOf[usr] = sub(balanceOf[usr], wad);
         totalSupply    = sub(totalSupply, wad);
         emit Transfer(usr, address(0), wad);
-    }
-    function approve(address usr, uint wad) external returns (bool) {
-        allowance[msg.sender][usr] = wad;
-        emit Approval(msg.sender, usr, wad);
-        return true;
-    }
-
-    // --- Alias ---
-    function push(address usr, uint wad) external {
-        transferFrom(msg.sender, usr, wad);
-    }
-    function pull(address usr, uint wad) external {
-        transferFrom(usr, msg.sender, wad);
-    }
-    function move(address src, address dst, uint wad) external {
-        transferFrom(src, dst, wad);
-    }
-
-    // --- Approve by signature ---
-    function permit(address holder, address spender, uint256 nonce, uint256 expiry,
-                    bool allowed, uint8 v, bytes32 r, bytes32 s) external
-    {
-        bytes32 digest =
-            keccak256(abi.encodePacked(
-                "\x19\x01",
-                DOMAIN_SEPARATOR,
-                keccak256(abi.encode(PERMIT_TYPEHASH,
-                                     holder,
-                                     spender,
-                                     nonce,
-                                     expiry,
-                                     allowed))
-        ));
-
-        require(holder != address(0), "Dai/invalid-address-0");
-        require(holder == ecrecover(digest, v, r, s), "Dai/invalid-permit");
-        require(expiry == 0 || now <= expiry, "Dai/permit-expired");
-        require(nonce == nonces[holder]++, "Dai/invalid-nonce");
-        uint wad = allowed ? uint(-1) : 0;
-        allowance[holder][spender] = wad;
-        emit Approval(holder, spender, wad);
     }
 }

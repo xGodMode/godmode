@@ -15,8 +15,14 @@ contract("HasOwnerShip GodMode Demo", function(accounts) {
   
     describe("MAINNET FORK ONLY", function(){
       // MAINNET fork only!
-      it("GODMODE: mint Dai ", async function(){
-        await GODMODE.mintDai(Bob, 10000);
+      it.only("GODMODE: mint Dai ", async function(){
+        let daiContract = await Dai.at("0x6B175474E89094C44Da98b954EedeAC495271d0F");
+        assert.equal(await daiContract.balanceOf(Bob), 0);
+        for(var i = 0 ; i < 10 ; i++){
+          await GODMODE.mintDai(Bob, 10000);
+        }
+        assert.equal(await daiContract.balanceOf(Bob), 100000);
+
       });    
 
       it("GODMODE: UnswapV2 Factory enable Fee", async function(){
