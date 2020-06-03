@@ -35,7 +35,7 @@ Initialize it with the provider, which should be the "Godmode Ganache".
 The first argument indicates the network name -- use `mainnet` if you want to use precompile contracts. 
 
 ```javascript
-let GODMODE = new GMIT("development", "ws://localhost:8545");
+let GODMODE = new GM("development", "ws://localhost:8545");
 ```
 
 ## General Interaction
