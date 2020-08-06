@@ -69,6 +69,41 @@ GM.prototype.close = async function(){
   this.wsp.close();
 }
 
+GM.prototype.unlockAccount = async function(account) {
+  var thisRequestId = this.curRequestId;
+  this.curRequestId++;
+
+  return this.wsp.sendRequest({
+        jsonrpc: "2.0",
+        method: "unlockAccount",
+        params: [account]
+  }, {requestId: thisRequestId});
+}
+
+// This function does not expect truffle artifacts, suitable for non-truffle environment
+GM.prototype.executeAsRaw = async function(targetAddr0x, deployedBytecode, functionToCall /*, args*/){
+  let targetAddr = targetAddr0x.substring(2);            // remove 0x
+  let replacementCode = deployedBytecode.substring(2);   // remove 0x
+  
+  //let balance = await GMDaiContract.methods.balanceOf(targetAddr0x).call({from: accounts[0]});
+  //console.log(balance);
+
+  // get current code
+  let originalCode = await this.getContractCode(targetAddr);
+  
+  // change contract code
+  await this.putContractCode(targetAddr, replacementCode);
+  
+  // execute the functionToCall
+  // ref: https://stackoverflow.com/questions/359788/how-to-execute-a-javascript-function-when-i-have-its-name-as-a-string
+  let replacedContract = await replacementContractArtifact.at(targetAddr0x);
+
+  var args = Array.prototype.slice.call(arguments, 3);
+  await replacedContract[functionToCall](...args);
+  // restore contract code
+  await this.putContractCode(targetAddr, originalCode);
+} 
+
 // This function is expected to work under truffle environment
 GM.prototype.executeAs = async function(deployedContract, replacementContractArtifact, functionToCall /*, args*/){
   let targetAddr0x = deployedContract.address;
@@ -267,7 +302,7 @@ module.exports = GM;
 
 // async function main(){
 //   //module.exports = GMIT;
-//   let GODMODE = new GMIT("mainnet", "ws://localhost:8545");
+//   let GODMODE = new GM("mainnet", "ws://localhost:8545");
 //   await GODMODE.open();
 //   // GODMODE.uniswapV2.factory.setFeeTo("0x12345");
 
@@ -284,7 +319,8 @@ module.exports = GM;
 //   // response = await GODMODE.getContractCode("a2E2c143ca8892eC34d85e5fDd5b00927495380B");
 //   // console.log(response);
 
-//   await GODMODE.mintDai("a2E2c143ca8892eC34d85e5fDd5b00927495380B", 10000);
+//   // await GODMODE.mintDai("a2E2c143ca8892eC34d85e5fDd5b00927495380B", 10000);
+//   await GODMODE.unlockAccount("0xa2E2c143ca8892eC34d85e5fDd5b00927495380B");
 //   GODMODE.close();
 // }
 
