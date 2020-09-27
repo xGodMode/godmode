@@ -15,7 +15,7 @@
   "scripts": {
     "test": "npm run test",
     "preinstall": "truffle compile",
-    "release": "dotenv release-it --ci --only-version --verbose"
+    "release": "dotenv release-it -- --ci --only-version --verbose"
   },
   "repository": {
     "type": "git",
