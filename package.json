@@ -5,7 +5,7 @@
   "main": "gm.js",
   "scripts": {
     "test": "npm run test",
-    "patch": "npm version patch && git add package.json && git commit -m \"patch: $npm_config_first\" && git push"
+    "patch": "npm version patch && git add package.json && git commit -m \"patch: $npm_config_first\" --allow-empty && git push"
   },
   "repository": {
     "type": "git",
