@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.1.1
 
       - id: setup-node
         uses: actions/setup-node@v1.4.2
@@ -48,4 +48,4 @@ jobs:
       - id: publish
         run: npm publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
