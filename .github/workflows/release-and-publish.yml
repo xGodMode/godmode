@@ -38,7 +38,7 @@ jobs:
       - id: release
         uses: rymndhng/release-on-push-action@master
         with:
-          bump_version_scheme: ${{ semver.outputs.bump_version_scheme }}
+          bump_version_scheme: ${{ jobs.semver.outputs.bump_version_scheme }}
 
   publish:
     needs: release
