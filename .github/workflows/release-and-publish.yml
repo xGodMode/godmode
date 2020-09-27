@@ -49,9 +49,9 @@ jobs:
       - id: publish
         run: |
           npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
-          npm config set scope "@xval"
+          npm config set scope "@xgm"
           npm config list
-          npm publish --@xval:registry=https://registry.npmjs.org/ --access public
+          npm publish --access public
         env:
           CI: true
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
