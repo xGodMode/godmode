@@ -3,9 +3,18 @@
   "version": "0.0.7",
   "description": "Test smart contracts in GodMode",
   "main": "gm.js",
+  "files": [
+    "/build",
+    "/contracts",
+    "/gmContractsInfo",
+    "/gm.js",
+    "/LICENSE",
+    "/README.md"
+  ],
   "scripts": {
     "test": "npm run test",
-    "release": "release-it --ci --only-version"
+    "preinstall": "truffle compile",
+    "release": "dotenv release-it --ci --only-version"
   },
   "repository": {
     "type": "git",
@@ -34,6 +43,15 @@
     "ws": "^7.3.0"
   },
   "devDependencies": {
+    "dotenv-cli": "^4.0.0",
     "husky": "^4.3.0"
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "release: v${version}"
+    },
+    "github": {
+      "release": true
+    }
   }
 }
