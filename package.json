@@ -4,7 +4,8 @@
   "description": "Test smart contracts in GodMode",
   "main": "gm.js",
   "scripts": {
-    "test": "npm run test"
+    "test": "npm run test",
+    "patch": "git commit -m \"patch: $npm_config_first\" --allow-empty && git push"
   },
   "repository": {
     "type": "git",
