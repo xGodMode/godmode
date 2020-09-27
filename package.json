@@ -1,11 +1,11 @@
 {
   "name": "@xgm/godmode",
-  "version": "0.0.5",
+  "version": "0.0.4",
   "description": "Test smart contracts in GodMode",
   "main": "gm.js",
   "scripts": {
     "test": "npm run test",
-    "patch": "npm version patch && git commit -m \"patch: $npm_config_first\" && git push"
+    "patch": "npm version patch && git add package.json && git commit -m \"patch: $npm_config_first\" && git push"
   },
   "repository": {
     "type": "git",
