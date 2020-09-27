@@ -7,6 +7,7 @@ on:
 
 jobs:
   release:
+    if: ${{ startsWith(github.event.head_commit.message, 'patch:') ||  startsWith(github.event.head_commit.message, 'minor:') || startsWith(github.event.head_commit.message, 'major:') }}
     runs-on: ubuntu-latest
     outputs:
       exit_code: ${{ steps.exit.outputs.code }}
@@ -31,13 +32,8 @@ jobs:
         with:
           bump_version_scheme: major
 
-      - id: exit
-        run: |
-          echo ::set-output name=code::$?
-
   publish:
     needs: release
-    if: needs.jobs.release.outputs.exit_code == 0
     runs-on: ubuntu-latest
     steps:
       - id: checkout
