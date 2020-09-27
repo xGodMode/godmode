@@ -24,6 +24,7 @@
     "url": "https://github.com/xGodMode/godmode-for-test/issues"
   },
   "homepage": "https://github.com/xGodMode/godmode-for-test#readme",
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
   "dependencies": {
     "@makerdao/dai": "^0.31.4",
     "promise": "^8.1.0",
