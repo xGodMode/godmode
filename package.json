@@ -1,6 +1,6 @@
 {
   "name": "@xgm/godmode",
-  "version": "0.0.5",
+  "version": "0.0.4",
   "description": "Test smart contracts in GodMode",
   "main": "gm.js",
   "scripts": {
