@@ -9,7 +9,7 @@ jobs:
   semver:
     runs-on: ubuntu-latest
     outputs:
-      bump: ${{ env.BUMP_VERSION_SCHEME }}
+      bump_version_scheme: ${{ env.BUMP_VERSION_SCHEME }}
     steps:
       - id: patch
         if: startsWith(github.event.head_commit.message, 'patch:')
