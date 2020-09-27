@@ -6,7 +6,7 @@ This library provides a truffle framework friendly api that allows developers to
 
 ## Installation
 
-`npm install --save-dev godmode-for-test`
+`npm install --save-dev @xgm/godmode`
 
 ## Usage
 
@@ -24,7 +24,7 @@ To see a sample project that uses this library, see this repo:
 In your javascript test file, import the library
 
 ```js
-const GM = require("godmode-for-test");
+const GM = require("@xgm/godmode");
 ```
 
 Initialize it with the provider, which should be the __GodMode Ganache__ (referenced above). The first argument indicates the network name -- use `mainnet` if you want to use pre-compiled contracts.
@@ -37,11 +37,11 @@ let GODMODE = new GM("development", "ws://localhost:8545");
 
 ```javascript
 await GODMODE.executeAs(
-    targetContract,
-    replacementContractArtifact,
-    "function_In_RC",
-    /* some arguments for the function */
-    {from: Bob} // Transaction meta info
+  targetContract,
+  replacementContractArtifact,
+  "function_In_RC",
+  /* some arguments for the function */
+  {from: Bob} // Transaction meta info
 );
 ```
 
