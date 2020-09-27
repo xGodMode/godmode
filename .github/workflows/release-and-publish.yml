@@ -33,6 +33,7 @@ jobs:
           bump_version_scheme: major
 
   publish:
+    name: publish
     needs: release
     runs-on: ubuntu-latest
     steps:
@@ -46,6 +47,11 @@ jobs:
           registry-url: https://registry.npmjs.org
 
       - id: publish
-        run: npm publish --access public
+        run: |
+          npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
+          npm config set scope "@xgm"
+          npm config list
+          npm publish --access public
         env:
+          CI: true
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
