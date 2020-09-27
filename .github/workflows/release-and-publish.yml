@@ -6,49 +6,44 @@ on:
       - "master"
 
 jobs:
-  semver:
+  release:
     runs-on: ubuntu-latest
     outputs:
-      bump_version_scheme: ${{ env.BUMP_VERSION_SCHEME }}
-    steps:
-      - id: patch
-        if: startsWith(github.event.head_commit.message, 'patch:')
-        env:
-          BUMP_VERSION_SCHEME: patch
-        run: echo $BUMP_VERSION_SCHEME
-
-      - id: minor
-        if: startsWith(github.event.head_commit.message, 'minor:')
-        env:
-          BUMP_VERSION_SCHEME: minor
-        run: echo $BUMP_VERSION_SCHEME
-
-      - id: major
-        if: startsWith(github.event.head_commit.message, 'major:')
-        env:
-          BUMP_VERSION_SCHEME: major
-        run: echo $BUMP_VERSION_SCHEME
-
-  release:
-    needs: semver
-    runs-on: ubuntu-latest
+      exit_code: ${{ steps.exit.outputs.code }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - id: release
+      - id: release-patch
+        if: startsWith(github.event.head_commit.message, 'patch:')
         uses: rymndhng/release-on-push-action@master
         with:
-          bump_version_scheme: ${{ needs.jobs.semver.outputs.bump_version_scheme }}
+          bump_version_scheme: patch
+
+      - id: release-minor
+        if: startsWith(github.event.head_commit.message, 'minor:')
+        uses: rymndhng/release-on-push-action@master
+        with:
+          bump_version_scheme: minor
+
+      - id: release-major
+        if: startsWith(github.event.head_commit.message, 'major:')
+        uses: rymndhng/release-on-push-action@master
+        with:
+          bump_version_scheme: major
+
+      - id: exit
+        run: |
+          echo ::set-output name=code::$?
 
   publish:
     needs: release
-    name: "Publish"
+    if: needs.jobs.release.outputs.exit_code == 0
     runs-on: ubuntu-latest
     steps:
       - id: checkout
         uses: actions/checkout@v2
 
-      - id: node
+      - id: setup-node
         uses: actions/setup-node@v1.4.2
         with:
           node-version: 12
