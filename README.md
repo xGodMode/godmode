@@ -8,6 +8,10 @@ This library provides a truffle framework friendly api that allows developers to
 
 `npm install --save-dev @xgm/godmode`
 
+You will also need to [install truffle](https://www.npmjs.com/package/truffle) so godmode can compile its contracts:
+
+`npm install -g truffle`
+
 ## Usage
 
 ### Getting started
