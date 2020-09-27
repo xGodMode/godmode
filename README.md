@@ -69,9 +69,9 @@ Fork this repo and create a descriptive PR.
 
 ## Releases
 GodMode is in __alpha__ so releases may be frequent.
-Core devs should create releases after merging in new features.
+Core devs should create releases after merging in new features by running
 
-`npm version <patch|minor|major> -m "<release title>"`
+`npm run release`
 
-GitHub actions will automatically create a release and publish it to npm.
+This will ask you for the release version, then automatically create a release and publish it to npm.
 

@@ -5,7 +5,7 @@
   "main": "gm.js",
   "scripts": {
     "test": "npm run test",
-    "release": "release-it"
+    "release": "release-it --ci --only-version"
   },
   "repository": {
     "type": "git",
