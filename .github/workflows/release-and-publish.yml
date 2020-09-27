@@ -6,27 +6,37 @@ on:
       - "master"
 
 jobs:
-  build:
-    if: startsWith(github.event.head_commit.message, 'release:')
-    name: "Create Release"
+  semver:
     runs-on: ubuntu-latest
+    outputs:
+      bump: ${{ env.BUMP_VERSION_SCHEME }}
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+      - id: patch
+        if: startsWith(github.event.head_commit.message, 'patch:')
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          BUMP_VERSION_SCHEME: patch
+      - id: minor
+        if: startsWith(github.event.head_commit.message, 'minor:')
+        env:
+          BUMP_VERSION_SCHEME: minor
+      - id: major
+        if: startsWith(github.event.head_commit.message, 'major:')
+        env:
+          BUMP_VERSION_SCHEME: major
+
+  release:
+    needs: semver
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - id: release
+        uses: rymndhng/release-on-push-action@master
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
+          bump_version_scheme: ${{ semver.outputs.bump_version_scheme }}
 
   publish:
-    if: startsWith(github.event.head_commit.message, 'release:')
+    needs: release
     name: "Publish"
     runs-on: ubuntu-latest
     steps:
