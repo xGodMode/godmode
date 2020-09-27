@@ -1,6 +1,6 @@
 {
   "name": "@xgm/godmode",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Test smart contracts in GodMode",
   "main": "gm.js",
   "scripts": {
@@ -24,7 +24,9 @@
     "url": "https://github.com/xGodMode/godmode-for-test/issues"
   },
   "homepage": "https://github.com/xGodMode/godmode-for-test#readme",
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "dependencies": {
     "@makerdao/dai": "^0.31.4",
     "promise": "^8.1.0",
