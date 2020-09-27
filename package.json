@@ -9,12 +9,13 @@
     "/gmContractsInfo",
     "/gm.js",
     "/LICENSE",
-    "/README.md"
+    "/README.md",
+    "/truffle-config.js"
   ],
   "scripts": {
     "test": "npm run test",
     "preinstall": "truffle compile",
-    "release": "dotenv release-it --ci --only-version"
+    "release": "dotenv release-it --ci --only-version --verbose"
   },
   "repository": {
     "type": "git",
@@ -41,6 +42,9 @@
     "web3": "^1.2.7",
     "websocket-as-promised": "^1.0.1",
     "ws": "^7.3.0"
+  },
+  "peerDependencies": {
+    "truffle": "5.x"
   },
   "devDependencies": {
     "dotenv-cli": "^4.0.0",
