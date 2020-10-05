@@ -48,6 +48,7 @@
     "truffle": "5.x"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
     "dotenv-cli": "^4.0.0",
     "husky": "^4.3.0",
     "mocha": "^8.1.3",
