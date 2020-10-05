@@ -15,7 +15,7 @@
   "scripts": {
     "test": "npm run test-contracts && npm run test-core",
     "test-contracts": "truffle test ./test/contracts/",
-    "test-core": "mocha --ignore ./test/core/ --recursive",
+    "test-core": "mocha \"./test/core/*\" --recursive",
     "preinstall": "truffle compile",
     "release": "dotenv release-it -- --ci --only-version --verbose"
   },
