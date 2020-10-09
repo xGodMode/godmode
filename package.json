@@ -13,6 +13,7 @@
     "/truffle-config.js"
   ],
   "scripts": {
+    "clean": "rm -R node_modules",
     "test": "npm run test-contracts && npm run test-core",
     "test-contracts": "truffle test ./test/contracts/",
     "test-core": "mocha \"./test/core/*\" --recursive",
