@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "outDir": "./dist",
+        "target": "es6",
+        "sourceMap": true
+    },
+    "include": ["./src/**/*"],
+    "compileOnSave": true
+}
