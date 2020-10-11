@@ -3,7 +3,8 @@
         "allowJs": true,
         "outDir": "./dist",
         "target": "es6",
-        "sourceMap": true
+        "sourceMap": true,
+        "moduleResolution": "node"
     },
     "include": ["./src/**/*"],
     "compileOnSave": true
