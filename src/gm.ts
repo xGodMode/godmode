@@ -2,12 +2,7 @@ import Web3 from 'web3';
 import WebSocket from 'ws';
 import WebSocketAsPromised from 'websocket-as-promised';
 
-const { GMError } = require('./common/errors');
-
-const CompoundCERC20 = require('../build/contracts/CErc20.json');
-const GMDai = require('../gmContractsInfo/gmDai.js');
-const GMUniswapV2Factory = require('../build/contracts/UniswapV2Factory.json');
-const GMUniswapV2Pair = require('../build/contracts/UniswapV2Pair.json');
+import { GMError } from './common/errors';
 
 enum EthereumNetwork {
     mainnet = 1,
@@ -23,7 +18,7 @@ export class GM {
 
     public txSender: string;
 
-    private web3: any;
+    private web3: Web3;
     private wsp: WebSocketAsPromised;
     private currentRequestId: number;
 
@@ -43,30 +38,30 @@ export class GM {
         }
     }
 
-    public async open() {
+    public async open(): Promise<void> {
         await this._openWebsocket();
         await this._setTxSender();
     }
 
-    public async close() {
+    public async close(): Promise<void> {
         const closing = this.wsp.close();
         this.wsp.removeAllListeners();
         await closing;
     }
 
-    private async _openWebsocket() {
+    private async _openWebsocket(): Promise<Event> {
         try {
             this.wsp = new WebSocketAsPromised(this.provider, {
                 createWebSocket: (url: string) => {
                     return new WebSocket(url);
                 },
-                extractMessageData: (event: any) => event,
                 packMessage: (data: any) => JSON.stringify(data),
                 unpackMessage: (data: string) => JSON.parse(data),
                 attachRequestId: (data: any, requestId: string | number) => {
                     return Object.assign({ id: requestId }, data);
                 },
                 extractRequestId: (data: any) => data && data.id,
+                extractMessageData: (event: any) => event,
             });
 
             this.wsp.onOpen.addListener((event) => console.log(event));
@@ -81,7 +76,7 @@ export class GM {
         }
     }
 
-    private async _setTxSender() {
+    private async _setTxSender(): Promise<void> {
         try {
             this.txSender = await this.web3.eth.personal.getAccounts()[0];
         } catch (error) {
