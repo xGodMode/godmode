@@ -1,14 +1,16 @@
 import chai from '../utils/chai';
 
-chai.configure();
-const { expect } = chai;
-
 import GMDep = require('../../src/gm.dep');
 import { GM } from '../../src/gm';
 import { GMError } from '../../src/common/errors';
 
-describe('gm', function () {
-    it('should initialize', async function () {
+chai.configure();
+const { expect } = chai;
+
+// TODO: run tests with mocked ws
+
+describe('gm', () => {
+    it('should initialize', async () => {
         const network = 'development';
         const provider = 'ws://localhost:8545';
         const gm = new GM(network, provider);
@@ -17,14 +19,33 @@ describe('gm', function () {
         expect(gm['web3'].currentProvider.url).to.equal(provider);
     });
 
-    describe('#open()', function () {
-        it('should throw when ganache can not be reached', async function () {
+    describe('#open()', () => {
+        it('should throw when a websocket is not running on the specified provider url', async () => {
             const falsePort = '1234';
-            const gm = new GMDep('development', `ws://localhost:${falsePort}`);
+            const gm = new GM('development', `ws://localhost:${falsePort}`);
             await expect(gm.open()).to.be.rejectedWith(
                 GMError,
-                'Failed to open',
+                'Failed to open websocket'
             );
+        });
+    });
+
+    describe('#close()', () => {
+        it('should remove websocket listeners', async () => {
+            const network = 'development';
+            const provider = 'ws://localhost:8545';
+            const gm = new GM(network, provider);
+            try {
+                await gm.open();
+            } catch (error) {
+                // ignore
+            }
+            await gm.close();
+            // TODO: Is there a way to check all at once?
+            expect(gm['wsp'].onOpen.hasListeners()).to.be.false;
+            expect(gm['wsp'].onError.hasListeners()).to.be.false;
+            expect(gm['wsp'].onClose.hasListeners()).to.be.false;
+            expect(gm['wsp'].onMessage.hasListeners()).to.be.false;
         });
     });
 });

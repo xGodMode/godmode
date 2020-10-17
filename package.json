@@ -17,7 +17,7 @@
         "test": "npm run test-contracts && npm run test-core",
         "test-contracts": "truffle test ./test/contracts/",
         "test-core": "mocha -r ts-node/register test/core/*.ts",
-        "preinstall": "truffle compile",
+        "postinstall": "truffle compile",
         "release": "dotenv release-it -- --ci --only-version --verbose"
     },
     "repository": {
@@ -42,7 +42,7 @@
         "@makerdao/dai": "^0.31.4",
         "promise": "^8.1.0",
         "web3": "^1.2.7",
-        "websocket-as-promised": "^1.0.1",
+        "websocket-as-promised": "^1.1.0",
         "ws": "^7.3.0"
     },
     "peerDependencies": {
