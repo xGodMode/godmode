@@ -3,6 +3,7 @@ import chai from '../utils/chai';
 import GMDep = require('../../src/gm.dep');
 import { GM } from '../../src/gm';
 import { GMError } from '../../src/common/errors';
+import Web3 from 'web3';
 
 chai.configure();
 const { expect } = chai;
@@ -16,7 +17,7 @@ describe('gm', () => {
         const gm = new GM(network, provider);
         expect(gm.network).to.equal(-1);
         expect(gm['currentRequestId']).to.equal(1);
-        expect(gm['web3'].currentProvider.url).to.equal(provider);
+        expect(gm['web3'].currentProvider.toString()).to.equal(provider);
     });
 
     describe('#open()', () => {

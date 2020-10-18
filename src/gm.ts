@@ -22,7 +22,8 @@ export class GM {
     private wsp: WebSocketAsPromised;
     private currentRequestId: number;
 
-    constructor(network: string, provider: string) {
+    constructor(network: string, provider: any) {
+        // TODO: Do we care what kind of providers we accept?
         this.network = EthereumNetwork[network];
         this.provider = provider;
         try {
@@ -34,7 +35,7 @@ export class GM {
         this.currentRequestId = 1;
 
         if (this.network != EthereumNetwork.development) {
-            // get correct address based on network
+            // TODO: Get correct contract addresses based on network
         }
     }
 
