@@ -79,7 +79,7 @@ export class GM {
 
     private async _setTxSender(): Promise<void> {
         try {
-            this.txSender = await this.web3.eth.personal.getAccounts()[0];
+            this.txSender = this.web3.eth.personal.defaultAccount;
         } catch (error) {
             throw new GMError(error, 'Failed to set txSender');
         }

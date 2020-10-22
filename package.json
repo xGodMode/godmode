@@ -3,6 +3,10 @@
     "version": "0.0.8",
     "description": "Test smart contracts in GodMode",
     "main": "dist/gm",
+    "engines": {
+        "node": "12.*"
+    },
+    "engineStrict": true,
     "files": [
         "/dist",
         "/build",
@@ -22,7 +26,7 @@
         "test": "npm run test-contracts && npm run test-core",
         "test-contracts": "truffle test ./test/contracts/",
         "test-core": "mocha -r ts-node/register test/core/*.ts",
-        "prepublish": "webpack --mode production",
+        "prepublishOnly": "webpack --mode production",
         "publish": "npm run release",
         "release": "dotenv release-it -- --ci --only-version --verbose"
     },
@@ -67,6 +71,7 @@
         "eslint": "^7.11.0",
         "eslint-config-prettier": "^6.12.0",
         "eslint-plugin-prettier": "^3.1.4",
+        "ganache-core": "git+https://github.com/xGodMode/ganache-core.git",
         "husky": "^4.3.0",
         "lint-staged": "^10.4.2",
         "mocha": "^8.1.3",
