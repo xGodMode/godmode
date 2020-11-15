@@ -51,6 +51,23 @@ export class GM {
         await closing;
     }
 
+    // TODO: Why don't we just use web3 lib method for this?
+    public async unlockAccount(
+        account: string,
+        password?: string
+    ): Promise<any> {
+        const currentRequestId = this.currentRequestId;
+        this.currentRequestId++;
+        return await this.wsp.sendRequest(
+            {
+                jsonrpc: '2.0',
+                method: 'personal_unlockAccount',
+                params: [account, password, 0],
+            },
+            { requestId: currentRequestId }
+        );
+    }
+
     private async _openWebsocket(): Promise<Event> {
         try {
             this.wsp = new WebSocketAsPromised(this.provider, {

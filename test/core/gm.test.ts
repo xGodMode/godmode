@@ -5,6 +5,7 @@ import GMDep = require('../../src/gm.dep');
 import { GM } from '../../src/gm';
 import { GMError } from '../../src/common/errors';
 import Web3 from 'web3';
+import { accountIsLocked } from '../utils/eth';
 
 chai.configure();
 const { expect } = chai;
@@ -83,6 +84,22 @@ describe('gm', () => {
             expect(gm['wsp'].onError.hasListeners()).to.be.false;
             expect(gm['wsp'].onClose.hasListeners()).to.be.false;
             expect(gm['wsp'].onMessage.hasListeners()).to.be.false;
+        });
+    });
+
+    describe('#unlockAccount()', () => {
+        it('should unlock the given account', async () => {
+            await gm.open();
+            const password = 'pw';
+            const account = await gm['web3'].eth.personal.newAccount(
+                password,
+                console.log
+            );
+            await gm['web3'].eth.personal.lockAccount(account, console.log);
+            expect(await accountIsLocked(gm['web3'], account)).to.be.true;
+            await gm.unlockAccount(account, password);
+            expect(await accountIsLocked(gm['web3'], account)).to.be.false;
+            await gm.close();
         });
     });
 });
