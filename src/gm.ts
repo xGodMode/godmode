@@ -16,11 +16,11 @@ export class GM {
     public readonly network: EthereumNetwork;
     public readonly provider: string;
 
-    public txSender: string;
-
     private web3: Web3;
     private wsp: WebSocketAsPromised;
     private currentRequestId: number;
+    private accounts: Array<string>;
+    private txSender: string;
 
     constructor(network: string, provider: any) {
         // TODO: Do we care what kind of providers we accept?
@@ -29,7 +29,7 @@ export class GM {
         try {
             this.web3 = new Web3(provider);
         } catch (error) {
-            throw new GMError(error, 'Failed');
+            throw new GMError(error, 'Failed to initialize web3');
         }
 
         this.currentRequestId = 1;
@@ -41,6 +41,7 @@ export class GM {
 
     public async open(): Promise<void> {
         await this._openWebsocket();
+        await this._setInitialAccounts();
         await this._setTxSender();
     }
 
@@ -77,9 +78,23 @@ export class GM {
         }
     }
 
-    private async _setTxSender(): Promise<void> {
+    private async _setInitialAccounts(): Promise<void> {
         try {
-            this.txSender = this.web3.eth.personal.defaultAccount;
+            this.accounts = await this.web3.eth.personal.getAccounts();
+        } catch (error) {
+            throw new GMError(error, 'Failed to set accounts');
+        }
+    }
+
+    private async _setTxSender(): Promise<void> {
+        const txSender = this.accounts[0];
+        try {
+            if (typeof txSender === 'string' && txSender != '') {
+                this.txSender = txSender;
+                this.web3.eth.defaultAccount = txSender;
+            } else {
+                throw Error(`"${txSender}" is not valid for txSender`);
+            }
         } catch (error) {
             throw new GMError(error, 'Failed to set txSender');
         }

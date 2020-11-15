@@ -22,6 +22,7 @@ const config = {
         // Prevent bundling of certain imported packages and instead retrieve these external dependencies at runtime.
         // excluding dependencies from the output bundles.
         // Instead, the created bundle relies on that dependency to be present in the consumer's environment
+        web3: 'commonjs2 web3',
     },
     resolve: {
         extensions: ['.ts', '.js'],

@@ -14,18 +14,25 @@ if (process.env.NODE_ENV == 'testing') {
     wsHost = 'docker.for.mac.' + wsHost;
 }
 
-let server = ganache.server();
+const server = ganache.server({
+    mnemonic:
+        'note flavor live ripple hold salute future drum robot book captain acoustic',
+    total_accounts: 10,
+    debug: true,
+});
 const port = 8545;
 const provider = `ws://${wsHost}:${port}`;
 const network = 'development';
 let gm: GM;
 
 describe('gm', () => {
-    beforeEach(async function () {
+    before(async function () {
         await server.listen(port);
+    });
+    beforeEach(async function () {
         gm = new GM(network, provider);
     });
-    afterEach(async function () {
+    after(async function () {
         await server.close();
     });
 
@@ -58,6 +65,12 @@ describe('gm', () => {
             if (typeof currentProvider !== 'string') {
                 expect(currentProvider.connected).to.be.true;
             }
+            await gm.close();
+        });
+        it('should set tx sender to default web3 account', async function () {
+            await gm.open();
+            expect(Web3.utils.isAddress(gm['txSender'])).to.be.true;
+            expect(gm['txSender']).to.equal(gm['web3'].eth.defaultAccount);
             await gm.close();
         });
     });
