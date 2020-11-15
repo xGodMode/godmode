@@ -24,8 +24,8 @@
         "webpack": "webpack --mode development",
         "webpack-dev": "webpack --mode development --watch",
         "test": "npm run test-contracts && npm run test-core",
-        "test-contracts": "truffle test ./test/contracts/",
-        "test-core": "mocha -r ts-node/register test/core/*.ts",
+        "test:contracts": "truffle test ./test/contracts/",
+        "test:core": "mocha -r ts-node/register test/core/*.ts",
         "prepublishOnly": "webpack --mode production",
         "publish": "npm run release",
         "release": "dotenv release-it -- --ci --only-version --verbose"
