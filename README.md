@@ -19,7 +19,7 @@ You will also need to [install truffle](https://www.npmjs.com/package/truffle) s
 When using this library, you need to run GodMode ganache as well.
 
 - [GODMODE Ganache-cli](https://github.com/xGodMode/godmode-ganache-cli)
-- [GODMODE Ganache-core](https://github.com/xGodMode/godmode-ganache-core)
+- [GODMODE Ganache-core](https://github.com/xGodMode/ganache-core)
 
 To see a sample project that uses this library, see this repo:
 
