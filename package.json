@@ -17,6 +17,7 @@
         "/README.md",
         "/truffle-config.js"
     ],
+    "bin": "bin/godmode.js",
     "scripts": {
         "postinstall": "truffle compile",
         "clean": "rm -R node_modules",
