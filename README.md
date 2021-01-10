@@ -106,8 +106,8 @@ npx godmode install
 
 Tests are written in [mocha](https://mochajs.org/).
 
-Test the core GM class with `npm run test-core`.
-Test GM contract interactions with `npm run test-contracts`.
+Test the core GM class with `npm run test:core`.
+Test GM contract interactions with `npm run test:contracts`.
 
 ## Contributing
 
