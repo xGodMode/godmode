@@ -1,4 +1,6 @@
 import Web3 from 'web3';
+import { AbiItem } from 'web3-utils';
+import { TransactionReceipt } from 'web3-core';
 import WebSocket from 'ws';
 import WebSocketAsPromised from 'websocket-as-promised';
 
@@ -15,12 +17,12 @@ enum EthereumNetwork {
 export class GM {
     public readonly network: EthereumNetwork;
     public readonly provider: string;
+    public txSender: string;
 
     private web3: Web3;
     private wsp: WebSocketAsPromised;
     private currentRequestId: number;
     private accounts: Array<string>;
-    private txSender: string;
 
     constructor(network: string, provider: any) {
         // TODO: Do we care what kind of providers we accept?
@@ -51,20 +53,37 @@ export class GM {
         await closing;
     }
 
-    // TODO: Why don't we just use web3 lib method for this?
-    public async unlockAccount(
-        account: string,
-        password?: string
-    ): Promise<any> {
-        const currentRequestId = this.currentRequestId;
-        this.currentRequestId++;
-        return await this.wsp.sendRequest(
-            {
-                jsonrpc: '2.0',
-                method: 'personal_unlockAccount',
-                params: [account, password, 0],
-            },
-            { requestId: currentRequestId }
+    public async unlockAccount(account: string): Promise<any> {
+        return await this._sendRPCRequest('godmode_unlockAccount', [account]);
+    }
+
+    /**
+     * Returns true if transaction executed successfully
+     * @param address Contract address
+     * @param method Contract method to call
+     * @param abi ABI of GM contract
+     * @param bytecode Runtime bytecode of GM contract
+     * @param from Address of tx sender
+     * @param args Contract method arguments
+     */
+    public async execute(
+        address: string,
+        method: string,
+        abi: AbiItem[],
+        bytecode: string,
+        from: string = this.txSender,
+        args?: any[]
+    ): Promise<boolean> {
+        if (!this.web3.utils.isAddress(address))
+            throw new GMError(TypeError('Invalid address'));
+        const contract = new this.web3.eth.Contract(abi, address);
+        return await this._execute(
+            address,
+            contract,
+            bytecode,
+            method,
+            from,
+            args
         );
     }
 
@@ -86,7 +105,8 @@ export class GM {
             this.wsp.onOpen.addListener((event) => console.log(event));
             this.wsp.onError.addListener((event) => console.error(event));
             this.wsp.onClose.addListener((event) => console.log(event));
-            this.wsp.onMessage.addListener((message) => console.log(message));
+            // TODO: Do this in debug mode?
+            // this.wsp.onMessage.addListener((message) => console.log(message));
 
             return await this.wsp.open();
         } catch (error) {
@@ -115,5 +135,52 @@ export class GM {
         } catch (error) {
             throw new GMError(error, 'Failed to set txSender');
         }
+    }
+
+    private async _execute(
+        address: string,
+        replacementContract: any,
+        replacementRuntimeBytecode: string,
+        method: string,
+        from: string,
+        args: Array<any>
+    ): Promise<any> {
+        let originalRuntimeBytecode = await this.web3.eth.getCode(address);
+        originalRuntimeBytecode = originalRuntimeBytecode.substring(2);
+        // TODO: Change godmode-ganache to to have to remove 0x here
+        await this._putBytecode(
+            address.substring(2),
+            replacementRuntimeBytecode
+        );
+        const tx = replacementContract.methods[method](...args);
+        const response: TransactionReceipt = await tx.send({ from });
+        await this._putBytecode(address.substring(2), originalRuntimeBytecode);
+        return response.status;
+    }
+
+    private async _putBytecode(
+        address: string,
+        bytecode: string
+    ): Promise<void> {
+        const response = await this._sendRPCRequest('godmode_putContractCode', [
+            address,
+            bytecode,
+        ]);
+    }
+
+    private async _sendRPCRequest(
+        method: string,
+        params: Array<string>
+    ): Promise<any> {
+        const currentRequestId = this.currentRequestId;
+        this.currentRequestId++;
+        return this.wsp.sendRequest(
+            {
+                jsonrpc: '2.0',
+                method,
+                params,
+            },
+            { requestId: currentRequestId }
+        );
     }
 }
