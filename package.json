@@ -19,7 +19,8 @@
     ],
     "bin": "bin/godmode.js",
     "scripts": {
-        "postinstall": "truffle compile",
+        "build:bin": "node_modules/typescript/bin/tsc",
+        "build:core": "npm run webpack",
         "clean": "rm -R node_modules",
         "lint": "eslint src --ext ts",
         "webpack": "webpack --mode development",
