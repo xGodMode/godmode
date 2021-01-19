@@ -213,3 +213,28 @@ export class GM {
         );
     }
 }
+
+setupConvenienceMethods();
+
+async function setupConvenienceMethods() {
+    console.log('Setting up convenience methods...');
+    // Maker
+    try {
+        const GMDai = await import('../build/contracts/GMDai.json');
+        GM.prototype['mintDai'] = async function (
+            recipient: string,
+            amount: BigNumberish
+        ) {
+            await Maker.mintDai(
+                this,
+                jsonToContract('GMDai', GMDai),
+                recipient,
+                amount
+            );
+        };
+    } catch (error) {
+        // pass for now
+        console.warn(error);
+    }
+    console.log('Done setting up convenience methods.');
+}
