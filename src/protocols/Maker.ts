@@ -40,10 +40,10 @@ export class Maker implements Protocol {
             return MakerAddresses[network.toString()][contractName];
         } catch (error) {
             if (error instanceof TypeError) {
-                throw ProtocolError(
-                    this.name,
-                    `Failed to retrieve locate for contract (${contractName}) on network (${network})`
-                );
+                throw ProtocolError({
+                    subCode: this.name,
+                    message: `No address available for contract (${contractName}) on network (${network})`,
+                });
             }
         }
     }

@@ -1,21 +1,18 @@
+import { ChainID } from 'caip';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 import { TransactionReceipt } from 'web3-core';
 import WebSocket from 'ws';
 import WebSocketAsPromised from 'websocket-as-promised';
+import { GMError, CAIPNetworkError } from '@xgm/error-codes';
 
-import { GMError } from './common/errors';
-
-enum EthereumNetwork {
-    mainnet = 1,
-    ropsten = 3,
-    rinkeby = 4,
-    kovan = 42,
-    development = -1,
-}
+import { Maker } from './protocols/Maker';
+import { BigNumberish } from '@ethersproject/bignumber';
+import { jsonToContract } from './common/contracts';
+import { SupportedNetworks } from './common/networks';
 
 export class GM {
-    public readonly network: EthereumNetwork;
+    public readonly network: ChainID;
     public readonly provider: string;
     public txSender: string;
 
@@ -26,19 +23,27 @@ export class GM {
 
     constructor(network: string, provider: any) {
         // TODO: Do we care what kind of providers we accept?
-        this.network = EthereumNetwork[network];
+        try {
+            this.network = SupportedNetworks[network];
+        } catch (error) {
+            throw CAIPNetworkError({
+                message: `Unsupported network (${network}). Must be one of ${Object.keys(
+                    SupportedNetworks
+                )}`,
+            });
+        }
+
         this.provider = provider;
         try {
             this.web3 = new Web3(provider);
         } catch (error) {
-            throw new GMError(error, 'Failed to initialize web3');
+            throw GMError({
+                baseError: error,
+                message: 'Failed to initialize web3',
+            });
         }
 
         this.currentRequestId = 1;
-
-        if (this.network != EthereumNetwork.development) {
-            // TODO: Get correct contract addresses based on network
-        }
     }
 
     public async open(): Promise<void> {
@@ -79,8 +84,13 @@ export class GM {
         from: string = this.txSender,
         args?: any[]
     ): Promise<boolean> {
-        if (!this.web3.utils.isAddress(address))
-            throw new GMError(TypeError('Invalid address'));
+        if (!this.web3.utils.isAddress(address)) {
+            throw GMError({
+                baseError: new TypeError(),
+                message: 'Invalid address',
+            });
+        }
+
         const contract = new this.web3.eth.Contract(abi, address);
         return await this._execute(
             address,
@@ -116,7 +126,10 @@ export class GM {
             return await this.wsp.open();
         } catch (error) {
             await this.wsp.close();
-            throw new GMError(error, 'Failed to open websocket');
+            throw GMError({
+                baseError: error,
+                message: 'Failed to open websocket',
+            });
         }
     }
 
@@ -124,7 +137,10 @@ export class GM {
         try {
             this.accounts = await this.web3.eth.personal.getAccounts();
         } catch (error) {
-            throw new GMError(error, 'Failed to set accounts');
+            throw GMError({
+                baseError: error,
+                message: 'Failed to set accounts',
+            });
         }
     }
 
@@ -138,7 +154,10 @@ export class GM {
                 throw Error(`"${txSender}" is not valid for txSender`);
             }
         } catch (error) {
-            throw new GMError(error, 'Failed to set txSender');
+            throw GMError({
+                baseError: error,
+                message: 'Failed to set txSender',
+            });
         }
     }
 

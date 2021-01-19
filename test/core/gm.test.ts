@@ -1,12 +1,13 @@
 import ganache from 'ganache-core';
 import Web3 from 'web3';
+import { GMError } from '@xgm/error-codes';
 
 import chai from '../utils/chai';
 import GMDep = require('../../src/gm.dep');
 import { GM } from '../../src/gm';
 import contracts from '../../src/common/contracts';
-import { GMError } from '../../src/common/errors';
 import { accountIsLocked } from '../utils/eth';
+import { ChainID } from 'caip';
 
 const { GMDai } = contracts;
 const GMDaiAbi = GMDai.contracts['GMDai.sol'].GMDai.abi;
@@ -32,7 +33,7 @@ const server = ganache.server({
 });
 const port = 8545;
 const provider = `ws://${wsHost}:${port}`;
-const network = 'development';
+const network = 'dev';
 let gm: GM;
 
 describe('gm', () => {
@@ -48,7 +49,7 @@ describe('gm', () => {
 
     it('should initialize', async () => {
         const currentProvider = gm['web3'].currentProvider;
-        expect(gm.network).to.equal(-1);
+        expect(gm.network.toString()).to.equal('000:0');
         expect(gm['currentRequestId']).to.equal(1);
         if (typeof currentProvider !== 'string') {
             if (currentProvider instanceof Web3.providers.WebsocketProvider) {
@@ -64,7 +65,6 @@ describe('gm', () => {
             const wrongPort = '1234';
             const gm = new GM('development', `ws://${wsHost}:${wrongPort}`);
             await expect(gm.open()).to.be.rejectedWith(
-                GMError,
                 'Failed to open websocket'
             );
             await gm.close();
