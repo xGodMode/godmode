@@ -95,7 +95,7 @@ export class GM {
 
         const contract = new this.web3.eth.Contract(abi, address);
 
-        options.from ? options.from : this.txSender;
+        options.from = options.from || this.txSender;
 
         return await this._execute(
             address,
