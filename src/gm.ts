@@ -53,6 +53,11 @@ export class GM {
         await closing;
     }
 
+    public async ping(): Promise<boolean> {
+        const response = await this._sendRPCRequest('godmode_debug', ['pong']);
+        return response.result == 'pong';
+    }
+
     public async unlockAccount(account: string): Promise<any> {
         return await this._sendRPCRequest('godmode_unlockAccount', [account]);
     }
