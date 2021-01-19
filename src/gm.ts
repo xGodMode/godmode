@@ -16,6 +16,9 @@ export class GM {
     public readonly provider: string;
     public txSender: string;
 
+    // Convenience methods
+    public mintDai: any;
+
     private web3: Web3;
     private wsp: WebSocketAsPromised;
     private currentRequestId: number;
@@ -214,14 +217,27 @@ export class GM {
     }
 }
 
+function DNEWarning(
+    methodName: string,
+    contractName: string,
+    baseError?: Error
+) {
+    throw GMError({
+        baseError,
+        subCode: 'M_DNE',
+        message: `Method (${methodName}) is unavailable. Did you install ${contractName}?`,
+    });
+}
+
 setupConvenienceMethods();
 
 async function setupConvenienceMethods() {
     console.log('Setting up convenience methods...');
+
     // Maker
     try {
         const GMDai = await import('../build/contracts/GMDai.json');
-        GM.prototype['mintDai'] = async function (
+        GM.prototype.mintDai = async function (
             recipient: string,
             amount: BigNumberish
         ): Promise<boolean> {
@@ -233,8 +249,8 @@ async function setupConvenienceMethods() {
             );
         };
     } catch (error) {
-        // pass for now
-        console.warn(error);
+        GM.prototype.mintDai = () => DNEWarning('mintDai', 'GMDai', error);
     }
+
     console.log('Done setting up convenience methods.');
 }
