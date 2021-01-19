@@ -173,7 +173,7 @@ export class GM {
         method: string,
         from: string,
         args: Array<any>
-    ): Promise<any> {
+    ): Promise<boolean> {
         let originalRuntimeBytecode = await this.web3.eth.getCode(address);
         originalRuntimeBytecode = originalRuntimeBytecode.substring(2);
         // TODO: Change godmode-ganache to to have to remove 0x here
@@ -224,8 +224,8 @@ async function setupConvenienceMethods() {
         GM.prototype['mintDai'] = async function (
             recipient: string,
             amount: BigNumberish
-        ) {
-            await Maker.mintDai(
+        ): Promise<boolean> {
+            return await Maker.mintDai(
                 this,
                 jsonToContract('GMDai', GMDai),
                 recipient,
