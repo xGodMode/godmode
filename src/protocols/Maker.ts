@@ -37,7 +37,7 @@ export class Maker implements Protocol {
 
     private static getAddress(network: ChainID, contractName: string): string {
         try {
-            return MakerAddresses[network.toString()][contractName];
+            return MakerAddresses[contractName][network.toString()];
         } catch (error) {
             if (error instanceof TypeError) {
                 throw ProtocolError({
