@@ -96,7 +96,7 @@ describe('gm', () => {
         });
     });
 
-    describe.only('#ping()', () => {
+    describe('#ping()', () => {
         it('should return true if a pong response was sent', async () => {
             await gm.open();
             expect(await gm.ping()).to.be.true;
@@ -123,19 +123,16 @@ describe('gm', () => {
     describe('#execute()', () => {
         it('should execute', async () => {
             await gm.open();
-            const method = 'mint';
             const from = gm.txSender;
             const args = [from, 100];
             const success = await gm.execute(
                 DaiAddress,
-                method,
                 GMDaiAbi,
                 GMDaiBytecode,
-                from,
-                args
+                'mint',
+                { from, args }
             );
             expect(success).to.be.true;
-            // TODO: test the balance
             await gm.close();
         });
     });

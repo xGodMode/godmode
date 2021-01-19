@@ -28,9 +28,9 @@ export class Maker implements Protocol {
         const DaiAddress = Maker.getAddress(gm.network, 'Dai');
         return await gm.execute(
             DaiAddress,
-            'mint',
             gmDai.abi,
             gmDai.runtimeBytecode,
+            'mint',
             { args: [recipient, amount] }
         );
     }

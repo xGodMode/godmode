@@ -71,18 +71,20 @@ export class GM {
      * Returns true if transaction executed successfully
      * @param address Contract address
      * @param method Contract method to call
-     * @param abi ABI of GM contract
-     * @param bytecode Runtime bytecode of GM contract
+     * @param abi GM contract ABI
+     * @param runtimeBytecode GM contract runtime bytecode
      * @param from Address of tx sender
      * @param args Contract method arguments
      */
     public async execute(
         address: string,
-        method: string,
         abi: AbiItem[],
-        bytecode: string,
-        from: string = this.txSender,
-        args?: any[]
+        runtimeBytecode: string,
+        method: string,
+        options?: {
+            from?: string;
+            args?: any[];
+        }
     ): Promise<boolean> {
         if (!this.web3.utils.isAddress(address)) {
             throw GMError({
@@ -92,13 +94,16 @@ export class GM {
         }
 
         const contract = new this.web3.eth.Contract(abi, address);
+
+        options.from ? options.from : this.txSender;
+
         return await this._execute(
             address,
             contract,
-            bytecode,
+            runtimeBytecode,
             method,
-            from,
-            args
+            options.from,
+            options.args
         );
     }
 
@@ -186,7 +191,7 @@ export class GM {
         address: string,
         bytecode: string
     ): Promise<void> {
-        const response = await this._sendRPCRequest('godmode_putContractCode', [
+        await this._sendRPCRequest('godmode_putContractCode', [
             address,
             bytecode,
         ]);
