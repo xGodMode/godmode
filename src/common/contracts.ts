@@ -6,9 +6,12 @@ export interface Contract {
     runtimeBytecode: string;
 }
 
-export function jsonToContract(gmName: string, contractJson: any): Contract {
-    const solName = `${gmName}.sol`;
-    const contract = contractJson.contracts[solName][gmName];
+export function extractContract(
+    protocolJson: any,
+    gmContractName: string
+): Contract {
+    const solName = `${gmContractName}.sol`;
+    const contract = protocolJson.contracts[solName][gmContractName];
     return {
         abi: contract.abi,
         runtimeBytecode: contract.evm.deployedBytecode.object,

@@ -59,29 +59,31 @@ Variable explanation:
     -   the `HasOwnerShipInstrumented` in `const HasOwnerShipInstrumented = artifacts.require("HasOwnerShipInstrumented");`
 -   `function_In_RC` is the function that was defined in the replacementContractArtifact.
 
-### Install pre-compiled contracts
+### Install pre-compiled protocol contracts
 
 **IMPORTANT: this only works on mainnet fork**
 
--   Install all GM contracts
+When you install a protocol, all of the contracts for that protocol will be stored in your `build/protocols` directory.
+
+-   Install all GM protocols
 
 ```sh
 npx godmode install --all
 ```
 
--   Install contracts from command line
+-   Install protocols from command line
 
 ```
-npx godmode install --contracts GMDai GMCToken
+npx godmode install --protocols Maker Compound
 ```
 
--   Install contracts from package.json
+-   Install protocols from package.json
 
 ```json
 "godmode": {
-  "contracts": [
-    "GMDai",
-    "GMCToken"
+  "protocols": [
+    "Maker",
+    "Compound"
   ]
 }
 ```

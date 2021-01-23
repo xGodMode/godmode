@@ -8,7 +8,7 @@ import { GMError, CAIPNetworkError } from '@xgm/error-codes';
 
 import { Maker } from './protocols/Maker';
 import { BigNumberish } from '@ethersproject/bignumber';
-import { jsonToContract } from './common/contracts';
+import { extractContract } from './common/contracts';
 import { SupportedNetworks } from './common/networks';
 
 export class GM {
@@ -218,14 +218,14 @@ export class GM {
 }
 
 function DNEWarning(
+    protocolName: string,
     methodName: string,
-    contractName: string,
     baseError?: Error
 ) {
     throw GMError({
         baseError,
         subCode: 'M_DNE',
-        message: `Method (${methodName}) is unavailable. Did you install ${contractName}?`,
+        message: `Method (${methodName}) is unavailable. Did you install the protocol (${protocolName})?`,
     });
 }
 
@@ -236,20 +236,20 @@ async function setupConvenienceMethods() {
 
     // Maker
     try {
-        const GMDai = await import('../build/contracts/GMDai.json');
+        const MakerJson = await import('../build/protocols/Maker.json');
         GM.prototype.mintDai = async function (
             recipient: string,
             amount: BigNumberish
         ): Promise<boolean> {
             return await Maker.mintDai(
                 this,
-                jsonToContract('GMDai', GMDai),
+                extractContract(MakerJson, 'GMDai'),
                 recipient,
                 amount
             );
         };
     } catch (error) {
-        GM.prototype.mintDai = () => DNEWarning('mintDai', 'GMDai', error);
+        GM.prototype.mintDai = () => DNEWarning('Maker', 'mintDai', error);
     }
 
     console.log('Done setting up convenience methods.');

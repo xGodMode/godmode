@@ -6,19 +6,19 @@ import program from 'commander';
 
 interface InstallOptions {
     all: boolean;
-    contracts: string;
+    protocols: string;
 }
 
 program
     .command('install')
-    .option('-a, --all', 'Installs all GM contracts')
-    .option('--contracts <list>', 'Space-separated list of GM contract names')
-    .description('Install GM smart contracts')
-    .action(async ({ all, contracts }: InstallOptions) => {
+    .option('-a, --all', 'Installs all GM protocols')
+    .option('--protocols <list>', 'Space-separated list of GM protocol names')
+    .description('Install GM protocols')
+    .action(async ({ all, protocols }: InstallOptions) => {
         if (all) {
             await installer();
-        } else if (contracts) {
-            await installer(contracts.split(' '));
+        } else if (protocols) {
+            await installer(protocols.split(' '));
         } else {
             const projectPackageJsonPath = path.join(
                 process.cwd(),
@@ -30,7 +30,7 @@ program
                         await fs.promises.readFile(projectPackageJsonPath)
                     ).toString()
                 );
-                await installer(projectPackageJson.godmode.contracts);
+                await installer(projectPackageJson.godmode.protocols);
             } catch (error) {
                 console.error('Failed to install', error.message);
             }

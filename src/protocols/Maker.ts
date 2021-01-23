@@ -2,7 +2,7 @@ import { ChainID } from 'caip';
 import { BigNumberish } from '@ethersproject/bignumber';
 import { ProtocolError } from '@xgm/error-codes';
 
-import { Addresses, Protocol } from './protocol';
+import { Addresses, Protocol } from './interfaces';
 import { EIP155_KOVAN, EIP155_MAINNET } from '../common/networks';
 import { GM } from '../gm';
 import { Contract } from '../common/contracts';
