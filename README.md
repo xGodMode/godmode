@@ -1,3 +1,5 @@
+![GodMode Logo](https://godmode-public-assets.s3.amazonaws.com/godmode_logo.jpg)
+
 # GodMode for Test
 
 This library provides a truffle framework friendly api that allows developers to use the "GodMode Ganache" within the javascript testing environment provided in the truffle framework. The library also pre-compiles GodMode contracts for popular defi projects such as MakerDao, Uniswap, and Compound. It provides an easy way to modify the state of the projects through a set of API.
