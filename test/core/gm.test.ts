@@ -116,18 +116,19 @@ describe('gm', () => {
     });
 
     describe('#execute()', () => {
+        const GMDai = extractContract(Maker.contracts, 'GMDai');
         it('should execute', async () => {
             await gm.open();
             const from = gm.txSender;
             const args = [from, 100];
-            const success = await gm.execute(
+            const receipt = (await gm.execute(
                 DaiAddress,
-                GMDaiAbi,
-                GMDaiBytecode,
+                GMDai.abi,
+                GMDai.runtimeBytecode,
                 'mint',
                 { from, args }
-            );
-            expect(success).to.be.true;
+            )) as TransactionReceipt;
+            expect(receipt.status).to.be.true;
             await gm.close();
         });
     });

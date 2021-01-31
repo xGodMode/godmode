@@ -35,14 +35,14 @@ export class Maker implements Protocol {
     public async mintDai(
         recipient: string,
         amount: BigNumberish
-    ): Promise<boolean> {
+    ): Promise<TransactionReceipt> {
         const daiAddress = this.getAddress('Dai');
-        return await this.gm.execute(
+        return (await this.gm.execute(
             daiAddress,
             this.gmDai.abi,
             this.gmDai.runtimeBytecode,
             'mint',
             { args: [recipient, amount] }
-        );
+        )) as TransactionReceipt;
     }
 }

@@ -31,13 +31,13 @@ export class Compound implements Protocol {
         cErc20Address: string,
         recipient: string,
         amount: BigNumberish
-    ): Promise<boolean> {
-        return await this.gm.execute(
+    ): Promise<TransactionReceipt> {
+        return (await this.gm.execute(
             cErc20Address,
             this.gmCompoundCErc20.abi,
             this.gmCompoundCErc20.runtimeBytecode,
             'giveAddrTokens',
             { args: [recipient, amount] }
-        );
+        )) as TransactionReceipt;
     }
 }

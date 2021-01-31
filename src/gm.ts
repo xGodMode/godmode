@@ -89,7 +89,7 @@ export class GM {
             from?: string;
             args?: any[];
         }
-    ): Promise<boolean> {
+    ): Promise<string | TransactionReceipt | TransactionResult> {
         if (!this.web3.utils.isAddress(address)) {
             throw GMError({
                 baseError: new TypeError(),
@@ -97,11 +97,15 @@ export class GM {
             });
         }
 
+        const abiItem = abi.find((item) => item.name == method);
+        const call = abiItem.constant;
+
         const contract = new this.web3.eth.Contract(abi, address);
 
         options.from = options.from || this.txSender;
 
         return await this._execute(
+            call,
             address,
             contract,
             runtimeBytecode,
@@ -171,24 +175,32 @@ export class GM {
     }
 
     private async _execute(
+        call: boolean,
         address: string,
         replacementContract: any,
         replacementRuntimeBytecode: string,
         method: string,
         from: string,
         args: Array<any>
-    ): Promise<boolean> {
+    ): Promise<string | TransactionReceipt | TransactionResult> {
         let originalRuntimeBytecode = await this.web3.eth.getCode(address);
         originalRuntimeBytecode = originalRuntimeBytecode.substring(2);
-        // TODO: Change godmode-ganache to to have to remove 0x here
+        // TODO: Change godmode-ganache to not have to remove 0x here
         await this._putBytecode(
             address.substring(2),
             replacementRuntimeBytecode
         );
         const tx = replacementContract.methods[method](...args);
-        const response: TransactionReceipt = await tx.send({ from });
+
+        let output: any;
+        if (call) {
+            output = (await tx.call({ from })) as string | TransactionResult;
+        } else {
+            output = (await tx.send({ from })) as TransactionReceipt;
+        }
+
         await this._putBytecode(address.substring(2), originalRuntimeBytecode);
-        return response.status;
+        return output;
     }
 
     private async _putBytecode(

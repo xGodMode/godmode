@@ -40,24 +40,29 @@ export class UniswapV2 implements Protocol {
         return getAddressDefault(this, contractName, network);
     }
 
-    public async Factory_setFeeTo(feeRecipient: string): Promise<boolean> {
+    public async Factory_setFeeTo(
+        feeRecipient: string
+    ): Promise<TransactionReceipt> {
         const address = this.getAddress('UniswapV2Factory');
-        return await this.gm.execute(
+        return (await this.gm.execute(
             address,
             this.gmUniswapV2Factory.abi,
             this.gmUniswapV2Factory.runtimeBytecode,
             'setFeeTo',
             { args: [feeRecipient] }
-        );
+        )) as TransactionReceipt;
     }
 
-    public async Pair_setKLast(pairAddress: string, kLast: BigNumberish) {
-        return await this.gm.execute(
+    public async Pair_setKLast(
+        pairAddress: string,
+        kLast: BigNumberish
+    ): Promise<TransactionReceipt> {
+        return (await this.gm.execute(
             pairAddress,
             this.gmUniswapV2Pair.abi,
             this.gmUniswapV2Pair.runtimeBytecode,
             'setKLast',
             { args: [kLast] }
-        );
+        )) as TransactionReceipt;
     }
 }
