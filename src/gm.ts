@@ -6,18 +6,18 @@ import WebSocket from 'ws';
 import WebSocketAsPromised from 'websocket-as-promised';
 import { GMError, CAIPNetworkError } from '@xgm/error-codes';
 
-import { Maker } from './protocols/Maker';
-import { BigNumberish } from '@ethersproject/bignumber';
-import { extractContract } from './common/contracts';
 import { SupportedNetworks } from './common/networks';
+import { Protocol, ProtocolNotAvailable } from './protocols/interfaces';
+import { setupProtocols } from './protocols';
 
 export class GM {
     public readonly network: ChainID;
     public readonly provider: string;
     public txSender: string;
 
-    // Convenience methods
-    public mintDai: any;
+    public Compound: Protocol | ProtocolNotAvailable;
+    public Maker: Protocol | ProtocolNotAvailable;
+    public UniswapV2: Protocol | ProtocolNotAvailable;
 
     private web3: Web3;
     private wsp: WebSocketAsPromised;
@@ -217,40 +217,4 @@ export class GM {
     }
 }
 
-function DNEWarning(
-    protocolName: string,
-    methodName: string,
-    baseError?: Error
-) {
-    throw GMError({
-        baseError,
-        subCode: 'M_DNE',
-        message: `Method (${methodName}) is unavailable. Did you install the protocol (${protocolName})?`,
-    });
-}
-
-setupConvenienceMethods();
-
-async function setupConvenienceMethods() {
-    console.log('Setting up convenience methods...');
-
-    // Maker
-    try {
-        const MakerJson = await import('../build/protocols/Maker.json');
-        GM.prototype.mintDai = async function (
-            recipient: string,
-            amount: BigNumberish
-        ): Promise<boolean> {
-            return await Maker.mintDai(
-                this,
-                extractContract(MakerJson, 'GMDai'),
-                recipient,
-                amount
-            );
-        };
-    } catch (error) {
-        GM.prototype.mintDai = () => DNEWarning('Maker', 'mintDai', error);
-    }
-
-    console.log('Done setting up convenience methods.');
-}
+setupProtocols();

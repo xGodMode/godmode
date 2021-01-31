@@ -1,11 +1,9 @@
-import { ChainID } from 'caip';
 import { BigNumberish } from '@ethersproject/bignumber';
-import { ProtocolError } from '@xgm/error-codes';
 
-import { Addresses, Protocol } from './interfaces';
 import { EIP155_KOVAN, EIP155_MAINNET } from '../common/networks';
+import { Contract, extractContract } from '../common/contracts';
 import { GM } from '../gm';
-import { Contract } from '../common/contracts';
+import { Addresses, Protocol, getAddressDefault } from './interfaces';
 
 export const MakerAddresses: Addresses = {
     Dai: {
@@ -15,36 +13,34 @@ export const MakerAddresses: Addresses = {
 };
 
 export class Maker implements Protocol {
-    public methods = {
-        mintDai: Maker.mintDai,
-    };
+    public name = 'Maker';
+    public addresses: Addresses = MakerAddresses;
 
-    public static async mintDai(
-        gm: GM,
-        gmDai: Contract,
+    private gm: GM;
+    private gmDai: Contract;
+
+    constructor(gm: GM, compiledContracts: any) {
+        this.gm = gm;
+
+        this.gmDai = extractContract(compiledContracts, 'GMDai');
+    }
+
+    public getAddress(contractName: string): string {
+        const network = this.gm.network.toString();
+        return getAddressDefault(this, contractName, network);
+    }
+
+    public async mintDai(
         recipient: string,
         amount: BigNumberish
     ): Promise<boolean> {
-        const DaiAddress = Maker.getAddress(gm.network, 'Dai');
-        return await gm.execute(
-            DaiAddress,
-            gmDai.abi,
-            gmDai.runtimeBytecode,
+        const daiAddress = this.getAddress('Dai');
+        return await this.gm.execute(
+            daiAddress,
+            this.gmDai.abi,
+            this.gmDai.runtimeBytecode,
             'mint',
             { args: [recipient, amount] }
         );
-    }
-
-    private static getAddress(network: ChainID, contractName: string): string {
-        try {
-            return MakerAddresses[contractName][network.toString()];
-        } catch (error) {
-            if (error instanceof TypeError) {
-                throw ProtocolError({
-                    subCode: this.name,
-                    message: `No address available for contract (${contractName}) on network (${network})`,
-                });
-            }
-        }
     }
 }

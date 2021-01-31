@@ -7,11 +7,11 @@ export interface Contract {
 }
 
 export function extractContract(
-    protocolJson: any,
+    contracts: any,
     gmContractName: string
 ): Contract {
     const solName = `${gmContractName}.sol`;
-    const contract = protocolJson.contracts[solName][gmContractName];
+    const contract = contracts[solName][gmContractName];
     return {
         abi: contract.abi,
         runtimeBytecode: contract.evm.deployedBytecode.object,

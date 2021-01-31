@@ -1,15 +1,34 @@
-import { GM } from '../gm';
+import { ProtocolError } from '@xgm/error-codes';
 
 export interface Addresses {
     [contract: string]: { [network: string]: string };
 }
 
 export interface Protocol {
-    methods: {
-        [name: string]: (
-            gm: GM,
-            contract: any,
-            ...args: any[]
-        ) => Promise<boolean>;
-    };
+    name: string;
+    addresses: Addresses;
+
+    getAddress: (contractName: string) => {};
+}
+
+export interface ProtocolNotAvailable {
+    (): void;
+}
+
+export function getAddressDefault(
+    protocol: Protocol,
+    contractName: string,
+    network: string
+) {
+    try {
+        return protocol.addresses[contractName][network];
+    } catch (error) {
+        if (error instanceof TypeError) {
+            throw ProtocolError({
+                subCode: this.name,
+                message: `No address available for contract ${contractName} on network ${network}`,
+            });
+        }
+        throw error;
+    }
 }
