@@ -2,8 +2,8 @@ import ganache from 'ganache-core';
 import Web3 from 'web3';
 
 import Maker from '../../build/protocols/Maker.json';
-import { extractContract } from '../../src/common/contracts';
 import { TransactionReceipt } from '../../src/common/interfaces';
+import { extractContract } from '../../src/common/utils';
 import { GM } from '../../src/gm';
 import GMDep = require('../../src/gm.dep');
 
