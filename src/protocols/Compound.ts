@@ -1,7 +1,9 @@
 import { BigNumberish } from '@ethersproject/bignumber';
 
-import { Contract, extractContract } from '../common/contracts';
+import { Contract, TransactionReceipt } from '../common/interfaces';
+import { extractContract } from '../common/utils';
 import { GM } from '../gm';
+
 import { Addresses, Protocol, getAddressDefault } from './interfaces';
 
 export const CompoundAddresses: Addresses = {};

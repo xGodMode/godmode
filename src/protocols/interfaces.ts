@@ -9,10 +9,12 @@ export interface Protocol {
     addresses: Addresses;
 
     getAddress: (contractName: string) => {};
+
+    [method: string]: any;
 }
 
 export interface ProtocolNotAvailable {
-    (): void;
+    [method: string]: any;
 }
 
 export function getAddressDefault(

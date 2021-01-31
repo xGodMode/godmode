@@ -1,10 +1,4 @@
-import requireDirectory from 'require-directory';
-export default requireDirectory(module, '../../build/contracts');
-
-export interface Contract {
-    abi: Array<any>;
-    runtimeBytecode: string;
-}
+import { Contract } from './interfaces';
 
 export function extractContract(
     contracts: any,

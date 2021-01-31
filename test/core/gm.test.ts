@@ -1,18 +1,15 @@
 import ganache from 'ganache-core';
 import Web3 from 'web3';
-import { GMError } from '@xgm/error-codes';
+
+import Maker from '../../build/protocols/Maker.json';
+import { extractContract } from '../../src/common/contracts';
+import { TransactionReceipt } from '../../src/common/interfaces';
+import { GM } from '../../src/gm';
+import GMDep = require('../../src/gm.dep');
 
 import chai from '../utils/chai';
-import GMDep = require('../../src/gm.dep');
-import { GM } from '../../src/gm';
-import contracts from '../../src/common/contracts';
 import { accountIsLocked } from '../utils/eth';
-import { ChainID } from 'caip';
 
-const { GMDai } = contracts;
-const GMDaiAbi = GMDai.contracts['GMDai.sol'].GMDai.abi;
-const GMDaiBytecode =
-    GMDai.contracts['GMDai.sol'].GMDai.evm.deployedBytecode.object;
 const DaiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
 
 chai.configure();
@@ -39,8 +36,6 @@ let gm: GM;
 describe('gm', () => {
     before(async function () {
         await server.listen(port);
-    });
-    beforeEach(async function () {
         gm = new GM(network, provider);
     });
     after(async function () {

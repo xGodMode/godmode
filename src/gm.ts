@@ -1,14 +1,14 @@
 import { ChainID } from 'caip';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
-import { TransactionReceipt } from 'web3-core';
 import WebSocket from 'ws';
 import WebSocketAsPromised from 'websocket-as-promised';
 import { GMError, CAIPNetworkError } from '@xgm/error-codes';
 
+import { TransactionReceipt, TransactionResult } from './common/interfaces';
 import { SupportedNetworks } from './common/networks';
+import { addPresetProtocols } from './protocols';
 import { Protocol, ProtocolNotAvailable } from './protocols/interfaces';
-import { setupProtocols } from './protocols';
 
 export class GM {
     public readonly network: ChainID;
@@ -46,6 +46,8 @@ export class GM {
             });
         }
 
+        addPresetProtocols(this);
+
         this.currentRequestId = 1;
     }
 
@@ -73,11 +75,10 @@ export class GM {
     /**
      * Returns true if transaction executed successfully
      * @param address Contract address
-     * @param method Contract method to call
      * @param abi GM contract ABI
      * @param runtimeBytecode GM contract runtime bytecode
-     * @param from Address of tx sender
-     * @param args Contract method arguments
+     * @param method Contract method to call
+     * @param options { from, args }
      */
     public async execute(
         address: string,
@@ -216,5 +217,3 @@ export class GM {
         );
     }
 }
-
-setupProtocols();

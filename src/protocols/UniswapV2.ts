@@ -1,8 +1,10 @@
 import { BigNumberish } from '@ethersproject/bignumber';
 
 import { EIP155_KOVAN, EIP155_MAINNET } from '../common/networks';
-import { Contract, extractContract } from '../common/contracts';
+import { Contract, TransactionReceipt } from '../common/interfaces';
+import { extractContract } from '../common/utils';
 import { GM } from '../gm';
+
 import { Addresses, Protocol, getAddressDefault } from './interfaces';
 
 export const UniswapV2Addresses: Addresses = {
