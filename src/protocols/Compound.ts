@@ -14,12 +14,12 @@ export class Compound implements Protocol {
 
     private gm: GM;
 
-    private gmCompoundCErc20: Contract;
+    private gmCErc20: Contract;
 
     constructor(gm: GM, compiledContracts: any) {
         this.gm = gm;
 
-        this.gmCompoundCErc20 = extractContract(compiledContracts, 'GMCErc20');
+        this.gmCErc20 = extractContract(compiledContracts, 'GMCErc20');
     }
 
     public getAddress(contractName: string): string {
@@ -27,15 +27,15 @@ export class Compound implements Protocol {
         return getAddressDefault(this, contractName, network);
     }
 
-    public async CErc20_giveAddrTokens(
+    public async mintCErc20(
         cErc20Address: string,
         recipient: string,
         amount: BigNumberish
     ): Promise<TransactionReceipt> {
         return (await this.gm.execute(
             cErc20Address,
-            this.gmCompoundCErc20.abi,
-            this.gmCompoundCErc20.runtimeBytecode,
+            this.gmCErc20.abi,
+            this.gmCErc20.runtimeBytecode,
             'giveAddrTokens',
             { args: [recipient, amount] }
         )) as TransactionReceipt;
