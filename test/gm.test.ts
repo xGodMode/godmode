@@ -1,14 +1,14 @@
-import ganache from 'ganache-core';
 import Web3 from 'web3';
 
-import Maker from '../../build/protocols/Maker.json';
-import { TransactionReceipt } from '../../src/common/interfaces';
-import { extractContract } from '../../src/common/utils';
-import { GM } from '../../src/gm';
-import GMDep = require('../../src/gm.dep');
+import Maker from '../build/protocols/Maker.json';
+import { TransactionReceipt } from '../src/common/interfaces';
+import { extractContract } from '../src/common/utils';
+import { GM } from '../src/gm';
+import GMDep = require('../src/gm.dep');
 
-import chai from '../utils/chai';
-import { accountIsLocked } from '../utils/eth';
+import { ganacheServer } from './fixtures/ganacheServer';
+import chai from './utils/chai';
+import { accountIsLocked } from './utils/eth';
 
 const DaiAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
 
@@ -20,18 +20,12 @@ if (process.env.NODE_ENV == 'testing') {
     wsHost = 'docker.for.mac.' + wsHost;
 }
 
-// TODO: Move this to a fixture
-const server = ganache.server({
-    mnemonic:
-        'note flavor live ripple hold salute future drum robot book captain acoustic',
-    total_accounts: 10,
-    debug: true,
-    // fork: <infura-mainnet-url>
-});
 const port = 8545;
 const provider = `ws://${wsHost}:${port}`;
 const network = 'dev';
 let gm: GM;
+
+const server = ganacheServer();
 
 describe('gm', () => {
     before(async function () {
