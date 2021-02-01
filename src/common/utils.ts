@@ -1,5 +1,9 @@
 import { Contract } from './interfaces';
 
+export function byteLength(message: string) {
+    return Buffer.byteLength(message, 'utf8');
+}
+
 export function extractContract(
     contracts: any,
     gmContractName: string
