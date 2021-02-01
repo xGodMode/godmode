@@ -122,7 +122,7 @@ export class GM {
                     return new WebSocket(url);
                 },
                 packMessage: (data: any) => JSON.stringify(data),
-                unpackMessage: (data: string) => JSON.parse(data),
+                unpackMessage: (data: any) => JSON.parse(data),
                 attachRequestId: (data: any, requestId: string | number) => {
                     return Object.assign({ id: requestId }, data);
                 },
@@ -219,6 +219,11 @@ export class GM {
     ): Promise<any> {
         const currentRequestId = this.currentRequestId;
         this.currentRequestId++;
+
+        if (!this.wsp) {
+            throw GMError({ message: 'Websocket is not open' });
+        }
+
         return this.wsp.sendRequest(
             {
                 jsonrpc: '2.0',
