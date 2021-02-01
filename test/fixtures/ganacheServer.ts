@@ -1,6 +1,5 @@
 import ganache from 'ganache-core';
 
-// TODO: Move this to a fixture
 export const ganacheServer = (fork?: string) =>
     ganache.server({
         mnemonic:

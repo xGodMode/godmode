@@ -14,6 +14,7 @@ export const UniswapV2Addresses: Addresses = {
     },
 };
 
+// TODO: Add method to get pair address from two token addresses
 export class UniswapV2 implements Protocol {
     public name = 'UniswapV2';
     public addresses: Addresses = UniswapV2Addresses;
