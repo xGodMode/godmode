@@ -24,11 +24,10 @@
         "lint": "eslint src --ext ts",
         "webpack": "webpack --mode development",
         "webpack-dev": "webpack --mode development --watch",
-        "test": "npm run test:core",
-        "test:core": "mocha -r ts-node/register test/core/*.ts",
+        "test": "mocha -r ts-node/register test/*.ts",
         "prepublishOnly": "webpack --mode production",
         "publish": "npm run release",
-        "release": "dotenv release-it -- --ci --only-version --verbose"
+        "release": "dotenv release-it -- --only-version --verbose"
     },
     "repository": {
         "type": "git",
@@ -38,11 +37,17 @@
         "godmode",
         "ethereum",
         "solidity",
+        "xgm",
+        "xgmstudio",
         "test",
         "testing",
-        "simluate"
+        "simluate",
+        "simulation"
     ],
-    "author": "Martinet Lee",
+    "contributors": [
+        "Martinet Lee",
+        "Val <godmodedevs@gmail.com> (https://twitter.com/codevaltweets)"
+    ],
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/xGodMode/godmode/issues"
@@ -68,7 +73,7 @@
         "@types/node": "^14.11.8",
         "@typescript-eslint/eslint-plugin": "^4.4.0",
         "@typescript-eslint/parser": "^4.4.0",
-        "@xgm/contract-library": "0.0.1",
+        "@xgm/contract-library": "0.0.2",
         "chai": "^4.2.0",
         "chai-as-promised": "^7.1.1",
         "dotenv-cli": "^4.0.0",
