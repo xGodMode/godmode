@@ -8,26 +8,22 @@
     },
     "engineStrict": true,
     "files": [
-        "/dist",
-        "/build",
-        "/gmContractsInfo",
-        "/gm.js",
-        "/LICENSE",
-        "/README.md",
-        "/truffle-config.js"
+        "/dist"
     ],
     "bin": "bin/godmode.js",
     "scripts": {
-        "build:bin": "node_modules/typescript/bin/tsc",
-        "build:core": "npm run webpack",
         "clean": "rm -R node_modules",
+        "dist": "npm run dist:core && npm run dist:bin",
+        "dist:bin": "node_modules/typescript/bin/tsc",
+        "dist:core": "npm run webpack:prod",
         "lint": "eslint src --ext ts",
-        "webpack": "webpack --mode development",
-        "webpack-dev": "webpack --mode development --watch",
-        "test": "mocha -r ts-node/register test/*.ts",
-        "prepublishOnly": "webpack --mode production",
+        "prepublishOnly": "npm run dist",
         "publish": "npm run release",
-        "release": "dotenv release-it -- --only-version --verbose"
+        "release": "dotenv release-it -- --only-version --verbose",
+        "test": "mocha -r ts-node/register test/*.ts",
+        "webpack": "webpack --mode development",
+        "webpack:prod": "webpack --mode production",
+        "webpack:watch": "webpack --mode development --watch"
     },
     "repository": {
         "type": "git",
@@ -64,7 +60,7 @@
         "ws": "^7.3.0"
     },
     "peerDependencies": {
-        "truffle": "5.x"
+        "godmode-ganache-core": "git+https://github.com/xGodMode/godmode-ganache-core.git#feat/refactor"
     },
     "devDependencies": {
         "@types/chai": "^4.2.13",
@@ -80,7 +76,7 @@
         "eslint": "^7.11.0",
         "eslint-config-prettier": "^6.12.0",
         "eslint-plugin-prettier": "^3.1.4",
-        "ganache-core": "git+https://github.com/xGodMode/ganache-core.git#feat/refactor",
+        "godmode-ganache-core": "git+https://github.com/xGodMode/godmode-ganache-core.git#feat/refactor",
         "husky": "^4.3.0",
         "lint-staged": "^10.4.2",
         "mocha": "^8.1.3",
