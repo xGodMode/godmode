@@ -1,4 +1,5 @@
-import ganache from 'ganache-core';
+require('dotenv').config();
+import ganache from 'godmode-ganache-core';
 
 export const ganacheServer = (fork?: string) =>
     ganache.server({
@@ -6,5 +7,5 @@ export const ganacheServer = (fork?: string) =>
             'note flavor live ripple hold salute future drum robot book captain acoustic',
         total_accounts: 10,
         debug: true,
-        fork, //: <infura_mainnet_url>
+        fork: process.env.INFURA_MAINNET_URL
     });

@@ -1,3 +1,4 @@
+require('dotenv').config();
 import { ChainID } from 'caip';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
@@ -9,6 +10,9 @@ import { TransactionReceipt, TransactionResult } from './common/interfaces';
 import { SupportedNetworks } from './common/networks';
 import { addPresetProtocols } from './protocols';
 import { Protocol, ProtocolNotAvailable } from './protocols/interfaces';
+
+// TODO: Clean this up into proper config for log levels
+const DEBUG = process.env.DEBUG == 'true';
 
 export class GM {
     public readonly network: ChainID;
@@ -118,6 +122,7 @@ export class GM {
     private async _openWebsocket(): Promise<Event> {
         try {
             this.wsp = new WebSocketAsPromised(this.provider, {
+                // @ts-ignore: ws type definition needs to be updated
                 createWebSocket: (url: string) => {
                     return new WebSocket(url);
                 },
@@ -127,14 +132,16 @@ export class GM {
                     return Object.assign({ id: requestId }, data);
                 },
                 extractRequestId: (data: any) => data && data.id,
-                extractMessageData: (event: any) => event,
+                extractMessageData: (data: any) => data,
             });
 
-            this.wsp.onOpen.addListener((event) => console.log(event));
-            this.wsp.onError.addListener((event) => console.error(event));
-            this.wsp.onClose.addListener((event) => console.log(event));
-            // TODO: Do this in debug mode?
-            // this.wsp.onMessage.addListener((message) => console.log(message));
+            // TODO: Add logger with log level
+            this.wsp.onError.addListener((error: Error) => console.error('WebSocket error:', error));
+            this.wsp.onClose.addListener((code: number, reason: string) => console.warn('WebSocket close:', code));
+            if (DEBUG) {
+                this.wsp.onOpen.addListener(() => console.log('WebSocket open'));
+                this.wsp.onMessage.addListener((message) => console.log('WebSocket message:', message));
+            }
 
             return await this.wsp.open();
         } catch (error) {

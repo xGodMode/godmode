@@ -4,7 +4,6 @@ import Maker from '../build/protocols/Maker.json';
 import { TransactionReceipt } from '../src/common/interfaces';
 import { extractContract } from '../src/common/utils';
 import { GM } from '../src/gm';
-import GMDep = require('../src/gm.dep');
 
 import { ganacheServer } from './fixtures/ganacheServer';
 import chai from './utils/chai';
