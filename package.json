@@ -104,11 +104,20 @@
     ]
   },
   "release-it": {
+    "hooks": {
+      "before:init": [
+        "npm install",
+        "npm run dist"
+      ]
+    },
     "git": {
       "commitMessage": "release: v${version}"
     },
     "github": {
       "release": true
     }
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

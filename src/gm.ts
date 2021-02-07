@@ -1,6 +1,6 @@
 require('dotenv').config();
 import { ChainID } from 'caip';
-import Web3  from 'web3';
+import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 import WebSocket from 'ws';
 import WebSocketAsPromised from 'websocket-as-promised';
