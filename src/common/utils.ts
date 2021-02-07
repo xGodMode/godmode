@@ -1,11 +1,11 @@
 import { Contract } from './interfaces';
 
-export function byteLength(message: string) {
+export function byteLength(message: string): number {
     return Buffer.byteLength(message, 'utf8');
 }
 
 export function extractContract(
-    contracts: any,
+    contracts: { [key: string]: any },
     gmContractName: string
 ): Contract {
     const solName = `${gmContractName}.sol`;

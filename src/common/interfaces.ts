@@ -5,6 +5,10 @@ export interface Contract {
     runtimeBytecode: string;
 }
 
-export interface TransactionResult {
-    [prop: string]: any;
+export type GodModeWsUrl = string;
+
+export type TransactionResult = string | TransactionResultObject;
+
+export interface TransactionResultObject {
+    [prop: string]: string;
 }

@@ -1,12 +1,12 @@
 require('dotenv').config();
 import { ChainID } from 'caip';
-import Web3 from 'web3';
+import Web3  from 'web3';
 import { AbiItem } from 'web3-utils';
 import WebSocket from 'ws';
 import WebSocketAsPromised from 'websocket-as-promised';
 import { GMError, CAIPNetworkError } from '@xgm/error-codes';
 
-import { TransactionReceipt, TransactionResult } from './common/interfaces';
+import { GodModeWsUrl, TransactionReceipt, TransactionResult } from './common/interfaces';
 import { SupportedNetworks } from './common/networks';
 import { addPresetProtocols } from './protocols';
 import { Protocol, ProtocolNotAvailable } from './protocols/interfaces';
@@ -28,8 +28,7 @@ export class GM {
     private currentRequestId: number;
     private accounts: Array<string>;
 
-    constructor(network: string, provider: any) {
-        // TODO: Do we care what kind of providers we accept?
+    constructor(network: string, provider: GodModeWsUrl) {
         try {
             this.network = SupportedNetworks[network];
         } catch (error) {
@@ -93,7 +92,7 @@ export class GM {
             from?: string;
             args?: any[];
         }
-    ): Promise<string | TransactionReceipt | TransactionResult> {
+    ): Promise<TransactionReceipt | TransactionResult> {
         if (!this.web3.utils.isAddress(address)) {
             throw GMError({
                 baseError: new TypeError(),
@@ -189,7 +188,7 @@ export class GM {
         method: string,
         from: string,
         args: Array<any>
-    ): Promise<string | TransactionReceipt | TransactionResult> {
+    ): Promise<TransactionReceipt | TransactionResult> {
         let originalRuntimeBytecode = await this.web3.eth.getCode(address);
         originalRuntimeBytecode = originalRuntimeBytecode.substring(2);
         // TODO: Change godmode-ganache to not have to remove 0x here
@@ -201,7 +200,7 @@ export class GM {
 
         let output: any;
         if (call) {
-            output = (await tx.call({ from })) as string | TransactionResult;
+            output = (await tx.call({ from })) as TransactionResult;
         } else {
             output = (await tx.send({ from })) as TransactionReceipt;
         }
