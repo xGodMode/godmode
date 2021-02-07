@@ -6,7 +6,7 @@ import { Compound } from './Compound';
 import { Maker } from './Maker';
 import { UniswapV2 } from './UniswapV2';
 
-export async function addPresetProtocols(gm: GM) {
+export async function addPresetProtocols(gm: GM): Promise<void> {
     console.log('Adding preset protocols...');
 
     // Compound
@@ -40,7 +40,7 @@ export async function addPresetProtocols(gm: GM) {
     console.log('Done adding preset protocols.');
 }
 
-export function throwProtocolNotAvailable(protocolName: string) {
+export function throwProtocolNotAvailable(protocolName: string): void {
     throw ProtocolError({
         subCode: 'NA',
         message: `${protocolName} protocol is unavailable. Did you install it?`,

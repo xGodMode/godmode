@@ -8,7 +8,7 @@ export interface Protocol {
     name: string;
     addresses: Addresses;
 
-    getAddress: (contractName: string) => {};
+    getAddress: (contractName: string) => string;
 
     [method: string]: any;
 }
@@ -21,7 +21,7 @@ export function getAddressDefault(
     protocol: Protocol,
     contractName: string,
     network: string
-) {
+): string {
     try {
         return protocol.addresses[contractName][network];
     } catch (error) {
