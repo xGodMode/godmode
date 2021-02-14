@@ -1,3 +1,5 @@
 build
 contracts
 node_modules
+dist
+package*.json
