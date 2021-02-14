@@ -18,6 +18,7 @@
     "dist:core": "npm run webpack:prod",
     "lint": "eslint src --ext ts",
     "prepublishOnly": "npm run dist",
+    "postinstall": "npm run dist",
     "publish": "npm run release",
     "release": "dotenv release-it -- --only-version --verbose",
     "test": "DEBUG=true mocha -r ts-node/register test/*.ts",
