@@ -13,6 +13,7 @@ import {
     TransactionResult,
 } from './common/interfaces';
 import { SupportedNetworks } from './common/networks';
+import { chop0x } from './common/utils';
 import { addPresetProtocols } from './protocols';
 import { Protocol, ProtocolNotAvailable } from './protocols/interfaces';
 
@@ -200,12 +201,18 @@ export class GM {
         from: string,
         args: Array<any>
     ): Promise<TransactionReceipt | TransactionResult> {
-        let originalRuntimeBytecode = await this.web3.eth.getCode(address);
-        originalRuntimeBytecode = originalRuntimeBytecode.substring(2);
-        // TODO: Change godmode-ganache to not have to remove 0x here
-        await this._putBytecode(
-            address.substring(2),
+        const addressChopped = chop0x(address);
+        const replacementRuntimeBytecodeChopped = chop0x(
             replacementRuntimeBytecode
+        );
+
+        const originalRuntimeBytecodeChopped = chop0x(
+            await this.web3.eth.getCode(address)
+        );
+
+        await this._putBytecode(
+            addressChopped,
+            replacementRuntimeBytecodeChopped
         );
         const tx = replacementContract.methods[method](...args);
 
@@ -216,7 +223,7 @@ export class GM {
             output = (await tx.send({ from })) as TransactionReceipt;
         }
 
-        await this._putBytecode(address.substring(2), originalRuntimeBytecode);
+        await this._putBytecode(addressChopped, originalRuntimeBytecodeChopped);
         return output;
     }
 
