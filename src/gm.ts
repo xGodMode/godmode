@@ -34,9 +34,8 @@ export class GM {
     private accounts: Array<string>;
 
     constructor(network: string, provider: GodModeWsUrl) {
-        try {
-            this.network = SupportedNetworks[network];
-        } catch (error) {
+        this.network = SupportedNetworks[network];
+        if (!this.network) {
             throw CAIPNetworkError({
                 message: `Unsupported network (${network}). Must be one of ${Object.keys(
                     SupportedNetworks
