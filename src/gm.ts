@@ -86,7 +86,7 @@ export class GM {
      * @param abi GM contract ABI
      * @param runtimeBytecode GM contract runtime bytecode
      * @param method Contract method to call
-     * @param options { from, args }
+     * @param options {obj} {from, args}
      */
     public async execute(
         address: string,
@@ -119,7 +119,7 @@ export class GM {
             runtimeBytecode,
             method,
             options.from,
-            options.args
+            options.args || []
         );
     }
 
