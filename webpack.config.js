@@ -13,9 +13,12 @@ const config = {
     entry: './src/gm.ts',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'gm.min.js',
+        filename: 'gm.js',
         libraryTarget: 'commonjs2',
         devtoolModuleFilenameTemplate: '../[resource-path]',
+    },
+    optimization: {
+        minimize: false,
     },
     devtool: 'source-map',
     externals: {
@@ -35,6 +38,9 @@ const config = {
                 use: [
                     {
                         loader: 'ts-loader',
+                        options: {
+                            configFile: 'tsconfig.webpack.json',
+                        },
                     },
                 ],
             },
