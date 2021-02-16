@@ -23,7 +23,9 @@ export class Maker extends Protocol {
     constructor(config: { gm: GM; compiledContracts: any } | null) {
         super(config);
 
-        this.gmDai = extractContract(config.compiledContracts, 'GMDai');
+        if (this.available) {
+            this.gmDai = extractContract(config.compiledContracts, 'GMDai');
+        }
     }
 
     public async mintDai(

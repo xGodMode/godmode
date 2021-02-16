@@ -25,14 +25,16 @@ export class UniswapV2 extends Protocol {
     constructor(config: { gm: GM; compiledContracts: any } | null) {
         super(config);
 
-        this.gmUniswapV2Factory = extractContract(
-            config.compiledContracts,
-            'GMUniswapV2Factory'
-        );
-        this.gmUniswapV2Pair = extractContract(
-            config.compiledContracts,
-            'GMUniswapV2Pair'
-        );
+        if (this.available) {
+            this.gmUniswapV2Factory = extractContract(
+                config.compiledContracts,
+                'GMUniswapV2Factory'
+            );
+            this.gmUniswapV2Pair = extractContract(
+                config.compiledContracts,
+                'GMUniswapV2Pair'
+            );
+        }
     }
 
     public async Factory_setFeeTo(

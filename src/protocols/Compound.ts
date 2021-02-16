@@ -17,7 +17,12 @@ export class Compound extends Protocol {
     constructor(config: { gm: GM; compiledContracts: any } | null) {
         super(config);
 
-        this.gmCErc20 = extractContract(config.compiledContracts, 'GMCErc20');
+        if (this.available) {
+            this.gmCErc20 = extractContract(
+                config.compiledContracts,
+                'GMCErc20'
+            );
+        }
     }
 
     public async mintCErc20(
