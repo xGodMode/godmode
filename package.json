@@ -75,7 +75,7 @@
     "@types/node": "^14.11.8",
     "@typescript-eslint/eslint-plugin": "^4.4.0",
     "@typescript-eslint/parser": "^4.4.0",
-    "@xgm/contract-library": "0.0.2",
+    "@xgm/contract-library": "^0.0.6",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "dotenv-cli": "^4.0.0",
