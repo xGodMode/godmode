@@ -28,7 +28,7 @@ const config = {
         web3: 'commonjs2 web3',
     },
     resolve: {
-        extensions: ['.ts', '.js'],
+        extensions: ['.ts', '.js', '.json'],
     },
     module: {
         rules: [

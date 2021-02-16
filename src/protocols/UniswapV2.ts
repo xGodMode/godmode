@@ -5,7 +5,7 @@ import { Contract, TransactionReceipt } from '../common/interfaces';
 import { extractContract } from '../common/utils';
 import { GM } from '../gm';
 
-import { Addresses, Protocol, getAddressDefault } from './interfaces';
+import { Addresses, Protocol } from './interfaces';
 
 export const UniswapV2Addresses: Addresses = {
     UniswapV2Factory: {
@@ -15,35 +15,30 @@ export const UniswapV2Addresses: Addresses = {
 };
 
 // TODO: Add method to get pair address from two token addresses
-export class UniswapV2 implements Protocol {
-    public name = 'UniswapV2';
-    public addresses: Addresses = UniswapV2Addresses;
+export class UniswapV2 extends Protocol {
+    public readonly name = 'UniswapV2';
+    public readonly addresses: Addresses = UniswapV2Addresses;
 
-    private gm: GM;
     private gmUniswapV2Factory: Contract;
     private gmUniswapV2Pair: Contract;
 
-    constructor(gm: GM, compiledContracts: any) {
-        this.gm = gm;
+    constructor(config: { gm: GM; compiledContracts: any } | null) {
+        super(config);
 
         this.gmUniswapV2Factory = extractContract(
-            compiledContracts,
+            config.compiledContracts,
             'GMUniswapV2Factory'
         );
         this.gmUniswapV2Pair = extractContract(
-            compiledContracts,
+            config.compiledContracts,
             'GMUniswapV2Pair'
         );
-    }
-
-    public getAddress(contractName: string): string {
-        const network = this.gm.network.toString();
-        return getAddressDefault(this, contractName, network);
     }
 
     public async Factory_setFeeTo(
         feeRecipient: string
     ): Promise<TransactionReceipt> {
+        this.throwIfNotAvailable();
         const address = this.getAddress('UniswapV2Factory');
         return (await this.gm.execute(
             address,
@@ -58,6 +53,7 @@ export class UniswapV2 implements Protocol {
         pairAddress: string,
         kLast: BigNumberish
     ): Promise<TransactionReceipt> {
+        this.throwIfNotAvailable();
         return (await this.gm.execute(
             pairAddress,
             this.gmUniswapV2Pair.abi,

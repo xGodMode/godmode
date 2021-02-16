@@ -1,4 +1,5 @@
-import { ProtocolError } from '@xgm/error-codes';
+import loadJsonFile from 'load-json-file';
+import path from 'path';
 
 import { GM } from '../gm';
 
@@ -8,41 +9,40 @@ import { UniswapV2 } from './UniswapV2';
 
 export async function addPresetProtocols(gm: GM): Promise<void> {
     console.log('Adding preset protocols...');
+    const protocolsPath = path.join(process.cwd(), 'build/protocols/');
 
     // Compound
     try {
-        const { contracts } = await import(
-            '../../build/protocols/Compound.json'
-        );
-        GM.prototype.Compound = new Compound(gm, contracts);
+        const file = path.join(protocolsPath, 'Compound.json');
+        const { contracts } = await loadJsonFile<any>(file);
+        GM.prototype.Compound = new Compound({
+            gm,
+            compiledContracts: contracts,
+        });
     } catch (error) {
-        GM.prototype.Compound = () => throwProtocolNotAvailable('Compound');
+        GM.prototype.Compound = new Compound(null);
     }
 
     // Maker
     try {
-        const { contracts } = await import('../../build/protocols/Maker.json');
-        GM.prototype.Maker = new Maker(gm, contracts);
+        const file = path.join(protocolsPath, 'Maker.json');
+        const { contracts } = await loadJsonFile<any>(file);
+        GM.prototype.Maker = new Maker({ gm, compiledContracts: contracts });
     } catch (error) {
-        GM.prototype.Maker = () => throwProtocolNotAvailable('Maker');
+        GM.prototype.Maker = new Maker(null);
     }
 
     // UniswapV2
     try {
-        const { contracts } = await import(
-            '../../build/protocols/UniswapV2.json'
-        );
-        GM.prototype.UniswapV2 = new UniswapV2(gm, contracts);
+        const file = path.join(protocolsPath, 'UniswapV2.json');
+        const { contracts } = await loadJsonFile<any>(file);
+        GM.prototype.UniswapV2 = new UniswapV2({
+            gm,
+            compiledContracts: contracts,
+        });
     } catch (error) {
-        GM.prototype.UniswapV2 = () => throwProtocolNotAvailable('UniswapV2');
+        GM.prototype.UniswapV2 = new UniswapV2(null);
     }
 
     console.log('Done adding preset protocols.');
-}
-
-export function throwProtocolNotAvailable(protocolName: string): void {
-    throw ProtocolError({
-        subCode: 'NA',
-        message: `${protocolName} protocol is unavailable. Did you install it?`,
-    });
 }

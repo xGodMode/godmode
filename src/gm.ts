@@ -15,7 +15,7 @@ import {
 import { SupportedNetworks } from './common/networks';
 import { chop0x } from './common/utils';
 import { addPresetProtocols } from './protocols';
-import { Protocol, ProtocolNotAvailable } from './protocols/interfaces';
+import { Protocol } from './protocols/interfaces';
 
 // TODO: Clean this up into proper config for log levels
 const DEBUG = process.env.DEBUG == 'true';
@@ -25,9 +25,9 @@ export class GM {
     public readonly provider: string;
     public txSender: string;
 
-    public Compound: Protocol | ProtocolNotAvailable;
-    public Maker: Protocol | ProtocolNotAvailable;
-    public UniswapV2: Protocol | ProtocolNotAvailable;
+    public Compound: Protocol;
+    public Maker: Protocol;
+    public UniswapV2: Protocol;
 
     private web3: Web3;
     private wsp: WebSocketAsPromised;
