@@ -56,7 +56,7 @@ export class GM {
 
         addPresetProtocols(this);
 
-        this.currentRequestId = 1;
+        this.currentRequestId = new Date().getTime();
     }
 
     public async open(): Promise<void> {
