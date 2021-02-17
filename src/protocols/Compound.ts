@@ -4,27 +4,25 @@ import { Contract, TransactionReceipt } from '../common/interfaces';
 import { extractContract } from '../common/utils';
 import { GM } from '../gm';
 
-import { Addresses, Protocol, getAddressDefault } from './interfaces';
+import { Addresses, Protocol } from './interfaces';
 
 export const CompoundAddresses: Addresses = {};
 
-export class Compound implements Protocol {
-    public name = 'Compound';
-    public addresses: Addresses = CompoundAddresses;
-
-    private gm: GM;
+export class Compound extends Protocol {
+    public readonly name = 'Compound';
+    public readonly addresses: Addresses = CompoundAddresses;
 
     private gmCErc20: Contract;
 
-    constructor(gm: GM, compiledContracts: any) {
-        this.gm = gm;
+    constructor(config: { gm: GM; compiledContracts: any } | null) {
+        super(config);
 
-        this.gmCErc20 = extractContract(compiledContracts, 'GMCErc20');
-    }
-
-    public getAddress(contractName: string): string {
-        const network = this.gm.network.toString();
-        return getAddressDefault(this, contractName, network);
+        if (this.available) {
+            this.gmCErc20 = extractContract(
+                config.compiledContracts,
+                'GMCErc20'
+            );
+        }
     }
 
     public async mintCErc20(
@@ -32,6 +30,7 @@ export class Compound implements Protocol {
         recipient: string,
         amount: BigNumberish
     ): Promise<TransactionReceipt> {
+        this.throwIfNotAvailable();
         return (await this.gm.execute(
             cErc20Address,
             this.gmCErc20.abi,

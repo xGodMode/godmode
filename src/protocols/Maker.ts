@@ -5,7 +5,7 @@ import { Contract, TransactionReceipt } from '../common/interfaces';
 import { extractContract } from '../common/utils';
 import { GM } from '../gm';
 
-import { Addresses, Protocol, getAddressDefault } from './interfaces';
+import { Addresses, Protocol } from './interfaces';
 
 export const MakerAddresses: Addresses = {
     Dai: {
@@ -14,31 +14,28 @@ export const MakerAddresses: Addresses = {
     },
 };
 
-export class Maker implements Protocol {
-    public name = 'Maker';
-    public addresses: Addresses = MakerAddresses;
+export class Maker extends Protocol {
+    public readonly name = 'Maker';
+    public readonly addresses: Addresses = MakerAddresses;
 
-    private gm: GM;
     private gmDai: Contract;
 
-    constructor(gm: GM, compiledContracts: any) {
-        this.gm = gm;
+    constructor(config: { gm: GM; compiledContracts: any } | null) {
+        super(config);
 
-        this.gmDai = extractContract(compiledContracts, 'GMDai');
-    }
-
-    public getAddress(contractName: string): string {
-        const network = this.gm.network.toString();
-        return getAddressDefault(this, contractName, network);
+        if (this.available) {
+            this.gmDai = extractContract(config.compiledContracts, 'GMDai');
+        }
     }
 
     public async mintDai(
         recipient: string,
         amount: BigNumberish
     ): Promise<TransactionReceipt> {
-        const daiAddress = this.getAddress('Dai');
+        this.throwIfNotAvailable();
+        const address = this.getAddress('Dai');
         return (await this.gm.execute(
-            daiAddress,
+            address,
             this.gmDai.abi,
             this.gmDai.runtimeBytecode,
             'mint',

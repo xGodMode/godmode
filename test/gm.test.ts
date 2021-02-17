@@ -51,10 +51,16 @@ describe('gm', () => {
     describe('#open()', () => {
         it('should throw when a websocket is not running on the specified provider url', async () => {
             const wrongPort = '1234';
-            const gm = new GM('development', `ws://${wsHost}:${wrongPort}`);
+            const gm = new GM('dev', `ws://${wsHost}:${wrongPort}`);
             await expect(gm.open()).to.be.rejectedWith(
                 'Failed to open websocket'
             );
+            await gm.close();
+        });
+        it('should throw when network is unsupported', async () => {
+            const unsupportedNetwork = 'development';
+            const gm = new GM(unsupportedNetwork, provider);
+            await expect(gm.open()).to.be.rejectedWith('Unsupported');
             await gm.close();
         });
         it('should connect web3 to websocket', async () => {

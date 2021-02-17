@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "outDir": "./dist",
+        "target": "es6",
+        "sourceMap": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "resolveJsonModule": true
+    },
+    "include": ["./src/gm.ts"],
+    "compileOnSave": true
+}

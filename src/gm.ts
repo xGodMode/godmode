@@ -13,8 +13,9 @@ import {
     TransactionResult,
 } from './common/interfaces';
 import { SupportedNetworks } from './common/networks';
+import { chop0x } from './common/utils';
 import { addPresetProtocols } from './protocols';
-import { Protocol, ProtocolNotAvailable } from './protocols/interfaces';
+import { Protocol } from './protocols/interfaces';
 
 // TODO: Clean this up into proper config for log levels
 const DEBUG = process.env.DEBUG == 'true';
@@ -24,9 +25,9 @@ export class GM {
     public readonly provider: string;
     public txSender: string;
 
-    public Compound: Protocol | ProtocolNotAvailable;
-    public Maker: Protocol | ProtocolNotAvailable;
-    public UniswapV2: Protocol | ProtocolNotAvailable;
+    public Compound: Protocol;
+    public Maker: Protocol;
+    public UniswapV2: Protocol;
 
     private web3: Web3;
     private wsp: WebSocketAsPromised;
@@ -34,9 +35,8 @@ export class GM {
     private accounts: Array<string>;
 
     constructor(network: string, provider: GodModeWsUrl) {
-        try {
-            this.network = SupportedNetworks[network];
-        } catch (error) {
+        this.network = SupportedNetworks[network];
+        if (!this.network) {
             throw CAIPNetworkError({
                 message: `Unsupported network (${network}). Must be one of ${Object.keys(
                     SupportedNetworks
@@ -56,7 +56,7 @@ export class GM {
 
         addPresetProtocols(this);
 
-        this.currentRequestId = 1;
+        this.currentRequestId = new Date().getTime();
     }
 
     public async open(): Promise<void> {
@@ -86,7 +86,7 @@ export class GM {
      * @param abi GM contract ABI
      * @param runtimeBytecode GM contract runtime bytecode
      * @param method Contract method to call
-     * @param options { from, args }
+     * @param options {obj} {from, args}
      */
     public async execute(
         address: string,
@@ -119,7 +119,7 @@ export class GM {
             runtimeBytecode,
             method,
             options.from,
-            options.args
+            options.args || []
         );
     }
 
@@ -201,12 +201,18 @@ export class GM {
         from: string,
         args: Array<any>
     ): Promise<TransactionReceipt | TransactionResult> {
-        let originalRuntimeBytecode = await this.web3.eth.getCode(address);
-        originalRuntimeBytecode = originalRuntimeBytecode.substring(2);
-        // TODO: Change godmode-ganache to not have to remove 0x here
-        await this._putBytecode(
-            address.substring(2),
+        const addressChopped = chop0x(address);
+        const replacementRuntimeBytecodeChopped = chop0x(
             replacementRuntimeBytecode
+        );
+
+        const originalRuntimeBytecodeChopped = chop0x(
+            await this.web3.eth.getCode(address)
+        );
+
+        await this._putBytecode(
+            addressChopped,
+            replacementRuntimeBytecodeChopped
         );
         const tx = replacementContract.methods[method](...args);
 
@@ -217,7 +223,7 @@ export class GM {
             output = (await tx.send({ from })) as TransactionReceipt;
         }
 
-        await this._putBytecode(address.substring(2), originalRuntimeBytecode);
+        await this._putBytecode(addressChopped, originalRuntimeBytecodeChopped);
         return output;
     }
 
