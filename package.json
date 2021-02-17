@@ -17,7 +17,6 @@
     "dist:bin": "node_modules/typescript/bin/tsc",
     "dist:core": "npm run webpack:prod",
     "lint": "eslint src --ext ts",
-    "prepublishOnly": "npm run dist",
     "release": "dotenv release-it -- --only-version --verbose",
     "test": "DEBUG=true mocha -r ts-node/register test/*.ts",
     "webpack": "webpack --mode development",
@@ -108,6 +107,7 @@
     "hooks": {
       "before:init": [
         "npm install",
+        "npm run dist",
         "git update-index -q --refresh"
       ]
     },
