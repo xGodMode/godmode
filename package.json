@@ -1,6 +1,6 @@
 {
   "name": "@xgm/godmode",
-  "version": "0.0.8",
+  "version": "0.1.3",
   "description": "Test smart contracts in GodMode",
   "main": "dist/gm",
   "engines": {
