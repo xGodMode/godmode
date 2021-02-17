@@ -67,7 +67,7 @@
     "ws": "^7.4.3"
   },
   "peerDependencies": {
-    "godmode-ganache-core": "git+https://github.com/xGodMode/godmode-ganache-core.git"
+    "godmode-ganache-cli": "git+https://github.com/xGodMode/godmode-ganache-cli.git"
   },
   "devDependencies": {
     "@types/chai": "^4.2.13",
