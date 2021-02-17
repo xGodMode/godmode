@@ -8,7 +8,7 @@
   },
   "engineStrict": true,
   "files": [
-    "dist"
+    "/dist"
   ],
   "bin": "bin/godmode.js",
   "scripts": {
