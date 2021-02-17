@@ -109,8 +109,7 @@
   "release-it": {
     "hooks": {
       "before:init": [
-        "npm install",
-        "npm run dist"
+        "npm install"
       ]
     },
     "git": {
