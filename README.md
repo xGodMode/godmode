@@ -35,7 +35,7 @@ In your javascript test file, import the library
 const { GM } = require('@xgm/godmode');
 ```
 
-Initialize it with the **GodMode Ganache** endoint (referenced above). The first argument indicates the network name -- use `mainnet` if you want to use pre-compiled contracts.
+Initialize it with the **GodMode Ganache** endpoint (referenced above). The first argument indicates the network name -- use `mainnet` if you want to use pre-compiled contracts.
 
 ```js
 const provider = 'ws://localhost:8545'; // from godmode-ganache-cli
