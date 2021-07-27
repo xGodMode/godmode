@@ -20,6 +20,7 @@ export async function addPresetProtocols(gm: GM): Promise<void> {
             compiledContracts: contracts,
         });
     } catch (error) {
+        console.warn('WARN:', error);
         GM.prototype.Compound = new Compound(null);
     }
 
@@ -29,6 +30,7 @@ export async function addPresetProtocols(gm: GM): Promise<void> {
         const { contracts } = await loadJsonFile<any>(file);
         GM.prototype.Maker = new Maker({ gm, compiledContracts: contracts });
     } catch (error) {
+        console.warn('WARN:', error);
         GM.prototype.Maker = new Maker(null);
     }
 
@@ -41,6 +43,7 @@ export async function addPresetProtocols(gm: GM): Promise<void> {
             compiledContracts: contracts,
         });
     } catch (error) {
+        console.warn('WARN:', error);
         GM.prototype.UniswapV2 = new UniswapV2(null);
     }
 
