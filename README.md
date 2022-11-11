@@ -124,6 +124,7 @@ Core devs should create releases after merging in new features by running
 `npm run dist && npm run release`
 
 This will ask you for the release version, then automatically create a release and publish it to npm.
+### test
 test
 test: '@Godmodes
 test: 'passes
