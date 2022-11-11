@@ -119,7 +119,13 @@ Fork this repo and create a descriptive PR.
 
 GodMode is in **alpha** so releases may be frequent.
 Core devs should create releases after merging in new features by running
+## **alpha**
 
+### @Godmodes
+
+test: '**alpha**
+test: '@Godmodes
+test: 'passes
 `npm run dist && npm run release`
 
 This will ask you for the release version, then automatically create a release and publish it to npm.
