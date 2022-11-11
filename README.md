@@ -32,7 +32,7 @@ To see a sample project that uses this library, see this repo:
 In your javascript test file, import the library
 
 ```js
-const { GM } = require('@xgm/godmode');
+const { GM } = require('@Godmodes');
 ```
 
 Initialize it with the **GodMode Ganache** endpoint (referenced above). The first argument indicates the network name -- use `mainnet` if you want to use pre-compiled contracts.
@@ -124,7 +124,7 @@ Core devs should create releases after merging in new features by running
 `npm run dist && npm run release`
 
 This will ask you for the release version, then automatically create a release and publish it to npm.
-### test
+### test passes @Godmodes
 test
 test: '@Godmodes
 test: 'passes
