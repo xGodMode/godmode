@@ -6,12 +6,12 @@ GodMode is a testing tool that allows you to easily modify the state of the Ethe
 
 This library provides a truffle framework friendly API and lets you install pre-compiled GodMode contracts for popular protocols such as MakerDao, Uniswap, and Compound.
 
-[Join our Discord](https://discord.gg/UPpgH2w) to learn more.
+©Delaware LLC®
 
 ## Installation
 
 ```sh
-npm install --save-dev @xgm/godmode
+npm install --save-dev @Godmodes
 ```
 
 When using this library, you need to run GodMode Ganache CLI as well.
@@ -117,9 +117,14 @@ Fork this repo and create a descriptive PR.
 
 ## Releases
 
+
 GodMode is in **alpha** so releases may be frequent.
 Core devs should create releases after merging in new features by running
 
 `npm run dist && npm run release`
 
 This will ask you for the release version, then automatically create a release and publish it to npm.
+test
+test: '@Godmodes
+test: 'passes
+test: 'passed 
